@@ -36,6 +36,9 @@ code {
 }
 
 .cus-menu-left {
+  height: calc(100% - 5rem);
+  top: 5rem;
+  z-index: 2;
   transition: all linear 0.2s;
 }
 

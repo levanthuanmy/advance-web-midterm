@@ -1,6 +1,5 @@
-import Button from "@restart/ui/esm/Button"
 import React, { useState } from "react"
-import { Form, Modal } from "react-bootstrap"
+import { Form, Modal, Button } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 import { post } from "../api"
 import ClassroomList from "../components/ClassroomList"
@@ -106,7 +105,9 @@ const HomePage = ({
         </Modal.Body>
 
         <Modal.Footer>
-          <Button type="submit">Tạo</Button>
+          <Button variant="primary" type="submit">
+            Tạo
+          </Button>
         </Modal.Footer>
       </Form>
     </Modal>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Image } from "react-bootstrap"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 
 const TopNav = ({
   showMenu,
@@ -10,6 +10,7 @@ const TopNav = ({
   setCurrentTab,
   themeColor,
 }) => {
+  const navigate = useNavigate()
   const location = useLocation()
   const [isClass, setIsClass] = useState(false)
 
@@ -48,7 +49,12 @@ const TopNav = ({
           )}
         </div>
 
-        <div className="cus-title h2 mb-0">My Classroom</div>
+        <div
+          className="cus-title h2 mb-0 cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          My Classroom
+        </div>
       </div>
 
       {isClass && (

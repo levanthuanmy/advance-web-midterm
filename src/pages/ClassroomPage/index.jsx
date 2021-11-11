@@ -8,6 +8,7 @@ import MemberPage from "./MemberPage"
 
 const ClassroomPage = ({ getThemeColor, currentTab }) => {
   const { id } = useParams()
+
   const [resClassroom, setResClassroom] = useState()
 
   const getClassroom = async () => {
@@ -23,7 +24,7 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
   useEffect(() => {
     window.scrollTo(0, 0)
     getClassroom()
-  }, [])
+  }, [id])
 
   const renderMainContent = () => {
     if (currentTab === 0) return <Main resClassroom={resClassroom} />

@@ -1,10 +1,43 @@
-import React, { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import React, { useEffect, useState } from "react"
+import { useNavigate, useLocation } from "react-router-dom"
 
 const LeftMenu = ({ showMenu, resClassrooms }) => {
-  // const [current, setCurrent] = useState(initialState)
+  const [currentClass, setCurrentClass] = useState()
+  const [currentMenuItem, setCurrentMenuItem] = useState(0)
   const navigate = useNavigate()
-  const handleClassClicked = () => {}
+  const location = useLocation()
+
+  const handleClassClicked = (classId, id) => {
+    setCurrentClass(id)
+    navigate(`/c/${classId}`)
+  }
+
+  const handleMenuItemClicked = (menuItemUrl, menuItemId) => {
+    setCurrentMenuItem(menuItemId)
+    navigate(menuItemUrl)
+  }
+
+  useEffect(() => {
+    const { pathname } = location
+    if (pathname.includes("/c/")) {
+      const classId = pathname.split("/")[2]
+      const currId = resClassrooms?.findIndex((classroom) =>
+        classroom?._id.includes(classId)
+      )
+
+      setCurrentClass(currId)
+      setCurrentMenuItem(-1)
+    } else {
+      setCurrentMenuItem(0)
+      setCurrentClass(-1)
+    }
+  }, [location.pathname, resClassrooms])
+
+  const menuList = [
+    { id: 0, name: "Trang chính", url: "/", icon: "bi-house-door-fill" },
+    { id: 1, name: "Sự kiện sắp tới", url: "", icon: "bi-calendar-event" },
+    { id: 2, name: "Cài đặt", url: "", icon: "bi-gear-fill" },
+  ]
 
   return (
     <div
@@ -13,35 +46,37 @@ const LeftMenu = ({ showMenu, resClassrooms }) => {
       }`}
       style={{
         width: showMenu ? "17rem" : "5rem",
-        height: "100%",
-        top: "5rem",
-        zIndex: 2,
         borderRight: showMenu ? "solid 1px rgba(100, 100, 100, 0.2)" : "",
       }}
     >
-      <div
-        className={`p-3 w-100 text-secondary me-3 h6 cus-menu-item text-nowrap cus-menu-item--active`}
-        onClick={() => navigate("/")}
-      >
-        <i className="bi bi-house-door-fill h4 me-3" />
-        {showMenu && <span>Trang chính</span>}
-      </div>
-      <div
-        className={`p-3 w-100 text-secondary me-3 h6 cus-menu-item text-nowrap`}
-      >
-        <i className="bi bi-calendar-event h4 me-3" />
-        {showMenu && <span>Sự kiện sắp tới</span>}
-      </div>
-      <div
-        className={`p-3 w-100 text-secondary me-3 h6 cus-menu-item text-nowrap`}
-      >
-        <i className="bi bi-gear-fill h4 me-3" />
-        {showMenu && <span>Cài đặt</span>}
-      </div>
-      <div id="line" className="ms-3 mb-2 border-bottom" />
+      {menuList.map((menuItem, id) => (
+        <div
+          key={id}
+          className={`p-3 w-100 text-secondary me-3 h6 cus-menu-item text-nowrap ${
+            currentMenuItem === menuItem.id && "cus-menu-item--active"
+          }`}
+          onClick={() => handleMenuItemClicked(menuItem.url, menuItem.id)}
+        >
+          <i className={`bi ${menuItem.icon} h4 me-3`} />
+          {showMenu && menuItem.name}
+        </div>
+      ))}
+
+      {showMenu && <div id="line" className="ms-3 mb-2 border-bottom" />}
+
       {showMenu &&
         resClassrooms?.map((classroom, id) => (
-          <div className="p-3 w-100 text-secondary text-nowrap text-truncate h6 cus-menu-item cus-menu-item--active">
+          <div
+            key={id}
+            className={`p-3 w-100 text-secondary text-nowrap text-truncate h6 cus-menu-item ${
+              currentClass === id && "cus-menu-item--active"
+            }`}
+            onClick={() => handleClassClicked(classroom._id, id)}
+          >
+            <i
+              className={`bi bi-circle-fill h4 me-3`}
+              style={{ color: classroom.themeColor }}
+            />
             {classroom.name}
           </div>
         ))}
