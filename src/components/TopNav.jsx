@@ -32,7 +32,7 @@ const TopNav = ({
 
   return (
     <div
-      className={`w-100 bg-white cus-top-nav d-flex align-items-center justify-content-between ${
+      className={`w-100 bg-white cus-top-nav d-flex align-items-center justify-content-between border-bottom ${
         isFixed && "position-fixed top-0 left-0 shadow-sm"
       }`}
     >

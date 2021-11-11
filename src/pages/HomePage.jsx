@@ -1,13 +1,16 @@
 import Button from "@restart/ui/esm/Button"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { Form, Modal } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import { get, post } from "../api"
+import { post } from "../api"
 import ClassroomList from "../components/ClassroomList"
 
-const HomePage = ({showMenu}) => {
-  const [resClassrooms, setResClassrooms] = useState()
-  const [isLoading, setIsLoading] = useState(true)
+const HomePage = ({
+  resClassrooms,
+  setResClassrooms,
+  isLoading,
+  setIsLoading,
+}) => {
   const [isShowModal, setIsShowModal] = useState(false)
   const {
     register,
@@ -15,16 +18,6 @@ const HomePage = ({showMenu}) => {
     reset,
     formState: { errors },
   } = useForm()
-
-  const getClassrooms = async () => {
-    try {
-      const res = await get(`/classrooms`)
-      setResClassrooms(res)
-      res && setIsLoading(false)
-    } catch (error) {
-      setIsLoading(false)
-    }
-  }
 
   const createClassroom = async (body) => {
     try {
@@ -36,10 +29,6 @@ const HomePage = ({showMenu}) => {
       console.log("createClassroom -> error", error)
     }
   }
-
-  useEffect(() => {
-    getClassrooms()
-  }, [])
 
   const onSubmit = (data) => {
     createClassroom(JSON.stringify(data))
@@ -136,11 +125,7 @@ const HomePage = ({showMenu}) => {
         </div>
       </div>
 
-      <ClassroomList
-        isLoading={isLoading}
-        showMenu={showMenu}
-        resClassrooms={resClassrooms}
-      />
+      <ClassroomList isLoading={isLoading} resClassrooms={resClassrooms} />
 
       {renderModal()}
     </>
