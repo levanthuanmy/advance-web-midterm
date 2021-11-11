@@ -1,0 +1,130 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.cus-classroom-card {
+  cursor: pointer;
+  width: 22rem;
+  height: 15rem;
+  transition: all ease-in-out 0.2s;
+}
+
+.cus-classroom-card:hover {
+  box-shadow: 0 0 15px 5px rgba(100, 100, 100, 0.2);
+}
+
+.cus-classroom-card__avatar {
+  right: 0px;
+  bottom: 10rem;
+  height: 5rem;
+}
+
+.cus-classroom-card__avatar__img {
+  width: 5rem;
+  position: relative;
+  left: calc(100% - 6rem);
+}
+
+.cus-menu-left {
+  transition: all ease 0.3s;
+}
+
+.cus-add-button {
+  cursor: pointer;
+  width: 3rem;
+  height: 3rem;
+  transition: all ease 0.3s;
+}
+
+.cus-add-button:hover {
+  box-shadow: 0 0 15px 5px rgba(100, 100, 100, 0.2);
+}
+
+.cus-spinner {
+  width: 5.2rem;
+  height: 5.2rem;
+}
+
+.cus-classroom-banner {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: inset 0 0 0 2000px rgba(64, 64, 64, 0.3);
+}
+
+.cus-host-name-text {
+  max-width: calc(100% - 6rem);
+}
+
+.cus-menu-item {
+  transition: all ease 0.3s;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.cus-menu-item--active,
+.cus-menu-item:hover {
+  background-color: rgba(242, 242, 242, 1);
+  border-top-right-radius: 2rem;
+  border-bottom-right-radius: 2rem;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cus-top-nav {
+  height: 5rem;
+  z-index: 999;
+}
+
+.cus-toggle-menu-btn {
+  width: 3rem;
+  height: 3rem;
+  transition: all ease 0.3s;
+  cursor: pointer;
+}
+
+.cus-toggle-menu-btn:hover {
+  background-color: rgba(242, 242, 242, 1);
+}
+
+.cus-title {
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+}
+
+.cus-my-avatar {
+  width: 3rem;
+  height: 3rem;
+  transition: all ease 0.3s;
+}
+
+.cus-my-avatar:hover {
+  box-shadow: 0 0 15px 5px rgba(100, 100, 100, 0.2);
+}
+
+.cus-tab-item {
+  border-bottom: solid 3px white;
+  font-weight: 600;
+  transition: all ease 0.3s;
+}
+
+.cus-tab-item:hover {
+  background-color: rgba(156, 156, 156, 0.2);
+}
+
+.cus-tab-item--active {
+  border-bottom: solid 3px blue;
+  color: blue;
+}
