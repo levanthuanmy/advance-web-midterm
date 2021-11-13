@@ -5,15 +5,8 @@ const Main = ({ resClassroom }) => {
   return (
     <div>
       <div
-        className="w-100 d-flex align-items-end py-3 px-4"
+        className="cus-classroom-page-banner w-100 d-flex align-items-end py-3 px-4"
         style={{
-          transition: "all linear .3s",
-          borderRadius: ".75rem",
-          height: "15rem",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          boxShadow: "inset 0 0 0 2000px rgba(64, 64, 64, 0.3)",
           backgroundImage: `url("${resClassroom?.banner}")`,
           backgroundColor: resClassroom?.themeColor || "gray",
         }}
@@ -25,15 +18,7 @@ const Main = ({ resClassroom }) => {
       <div className="w-100 my-4">
         <Row className="m-0">
           <Col sm="12" md="auto" className="p-0 me-4">
-            <div
-              className="border p-3"
-              style={{
-                width: "12rem",
-                borderRadius: ".5rem",
-                fontSize: ".875rem",
-                fontWeight: "600",
-              }}
-            >
+            <div className="cus-short-event-info border p-3">
               <div className="">Sắp đến hạn</div>
               <div className="fw-normal pt-3 text-muted">
                 Tuyệt vời, không có bài tập nào sắp đến hạn!

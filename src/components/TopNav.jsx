@@ -81,7 +81,7 @@ const TopNav = ({
 
       <div
         id="right"
-        className="cus-my-avatar bg-success rounded-circle me-3 cursor-pointer"
+        className="cus-my-avatar bg-secondary rounded-circle me-3 cursor-pointer"
       >
         <Image
           src={`/images/default-user-${

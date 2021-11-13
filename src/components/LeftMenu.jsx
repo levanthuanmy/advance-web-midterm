@@ -31,7 +31,7 @@ const LeftMenu = ({ showMenu, resClassrooms }) => {
       setCurrentMenuItem(0)
       setCurrentClass(-1)
     }
-  }, [location.pathname, resClassrooms])
+  }, [location, location.pathname, resClassrooms])
 
   const menuList = [
     { id: 0, name: "Trang chính", url: "/", icon: "bi-house-door-fill" },

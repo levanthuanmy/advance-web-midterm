@@ -19,12 +19,12 @@ const ClassroomCard = ({ classroom }) => {
 
   return (
     <div className="cus-classroom-card rounded">
-      <Link to={`/c/${classroom._id}`} className="text-decoration-none">
+      <Link to={`/c/${classroom?._id}`} className="text-decoration-none">
         <div
           className="h-50 w-100 rounded-top border p-3 d-flex flex-column justify-content-between text-white cus-classroom-banner"
           style={{
-            backgroundImage: `url(${classroom.banner})`,
-            backgroundColor: classroom.themeColor,
+            backgroundImage: `url(${classroom?.banner})`,
+            backgroundColor: classroom?.themeColor,
           }}
         >
           <div className="text-truncate h3">{classroom?.name}</div>
