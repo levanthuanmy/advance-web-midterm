@@ -1,6 +1,6 @@
 import axios from "axios"
 import * as queryString from "query-string"
-import { CLIENT_ID, CLIENT_SECRET } from "./constants"
+import { CLIENT_ID, CLIENT_SECRET, GG_REDIRECT_URI } from "./constants"
 
 export function getAccessTokenFromCode(code) {
   var data = require("qs").stringify({
@@ -44,11 +44,11 @@ export async function getGoogleUserInfo(access_token) {
 
 const stringifiedParams = queryString.stringify({
   client_id: CLIENT_ID,
-  redirect_uri: "http://localhost:3001/guguuLogin",
+  redirect_uri: GG_REDIRECT_URI,
   scope: [
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/userinfo.profile",
-  ].join(" "), // space seperated string
+  ].join(" "), // space separated string
   response_type: "code",
   access_type: "offline",
   prompt: "consent",
