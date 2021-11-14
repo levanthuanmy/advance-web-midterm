@@ -1,9 +1,12 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Button, Form, Modal } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 import Cookies from "universal-cookie"
 import { post } from "../api"
-import { googleLoginUrl } from "../config/GoogleAuth"
+import { googleLoginUrl } from '../config/GoogleAuth';
+import * as queryString from 'query-string';
+import { getAccessTokenFromCode, getGoogleUserInfo } from '../config/GoogleAuth';
+import {useNavigate} from 'react-router-dom'
 
 const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   const [loginMode, setLoginMode] = useState(0)
@@ -16,6 +19,10 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   } = useForm()
 
   const cookies = new Cookies()
+  
+  const navigate = useNavigate()
+  
+  const [googleCode, setGoogleCode] = useState("")
 
   const userLogin = async (body) => {
     const res = await post("/users/login", {}, JSON.stringify(body))
@@ -23,6 +30,18 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
     cookies.set("token", res?.token)
     setIsShowLogin(false)
     storeUserInfo(res?.user)
+  }
+
+
+  const userLoginWithGoogle = async (body) => {
+    const res = await post("/users/loginWithGoogle", {}, JSON.stringify(body))    
+    // if (res && res.token && res.user) { 
+      console.log("Login success")
+      cookies.set("token", res?.token)
+      setIsShowLogin(false)
+      storeUserInfo(res?.user)
+      navigate('/')
+    
   }
 
   const userSignUp = async (body) => {
@@ -43,7 +62,7 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
       const body = {
         name: data.signUpName,
         email: data.signUpEmail,
-        password: data.signUpPassword,
+        password: data.signUpPassword,        
       }
       userSignUp(body)
     } else {
@@ -52,6 +71,31 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
     }
   }
 
+    //use for Google login
+    useEffect(() => {
+     
+      const urlParams = queryString.parse(window.location.search);
+        if (urlParams.error || urlParams.code === undefined) {
+          console.log(`An error occurred: ${urlParams.error}`);
+        } else {
+          setGoogleCode(urlParams.code);
+          console.log(`The code is: ${urlParams.code}`);
+          loginWithGoogle(urlParams.code) 
+        }        
+    }, []);
+
+    const loginWithGoogle = async (code) => {
+      const token = await getAccessTokenFromCode(code)
+      const userInfo = await getGoogleUserInfo(token)
+      console.log('loginWithGoogle ⟩ userInfo', userInfo)
+      const body = {
+        name: userInfo.name,
+        email: userInfo.email,
+        id: userInfo.id,
+        avatar: userInfo.picture,
+      }
+      userLoginWithGoogle(body)
+    }
   return (
     <Modal
       show={isShowLogin}

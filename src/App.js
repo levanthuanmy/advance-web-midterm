@@ -1,4 +1,3 @@
-import * as queryString from 'query-string'
 import React, { useEffect, useRef, useState } from "react"
 import { Route, Routes } from "react-router-dom"
 import Cookies from 'universal-cookie'
@@ -6,7 +5,6 @@ import { get } from "./api"
 import HandleLogin from "./components/HandleLogin"
 import LeftMenu from "./components/LeftMenu"
 import TopNav from "./components/TopNav"
-import { getAccessTokenFromCode, getGoogleUserInfo } from './config/GoogleAuth'
 import ClassroomPage from "./pages/ClassroomPage"
 import HomePage from "./pages/HomePage"
 import PreJoinClassPage from "./pages/PreJoinClassPage"
@@ -19,11 +17,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [themeColor, setThemeColor] = useState()
   const [isShowLogin, setIsShowLogin] = useState(false)
-
   const cookies = new Cookies()
-
-  const [googleCode, setGoogleCode] = useState("")
-
 
   const ref = useRef(null)
 
@@ -62,27 +56,6 @@ const App = () => {
       )
   }, [])
 
-  //use for Google login
-
-  const loginWithGoogle = async (code) => {
-    const token = await getAccessTokenFromCode(code)
-    const userInfo = await getGoogleUserInfo(token)
-    console.log('loginWithGoogle ⟩ userInfo', userInfo)
-  }
-
-  useEffect(() => {
-    const urlParams = queryString.parse(window.location.search)
-
-    if (urlParams.error || urlParams.code === undefined) {
-      console.log(`An error occurred: ${urlParams.error}`)
-    } else {
-      setGoogleCode(urlParams.code)
-      console.log(`The code is: ${urlParams.code}`)
-      loginWithGoogle(urlParams.code)
-    }
-  }, [])
-
-  //----------------------
 
   return (
     <>
