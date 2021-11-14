@@ -7,7 +7,7 @@ export function getAccessTokenFromCode(code) {
     code: code,
     client_id: CLIENT_ID,
     client_secret: CLIENT_SECRET,
-    redirect_uri: "http://localhost:3001/guguuLogin",
+    redirect_uri: GG_REDIRECT_URI,
     grant_type: "authorization_code",
   })
 
