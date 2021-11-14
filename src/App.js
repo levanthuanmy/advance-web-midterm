@@ -39,7 +39,7 @@ const App = () => {
   }
 
   useEffect(() => {
-    if (cookies.get('token')?.length) {
+    if (cookies.get('token')?.length && cookies.get('token') !== 'undefined') {
       getClassrooms()
     }
     else {
