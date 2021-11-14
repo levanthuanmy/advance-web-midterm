@@ -192,3 +192,22 @@ code {
 .cus-login-btn:hover {
   transform: rotate(360deg);
 }
+
+.cus-avatar-dropdown {
+  overflow-wrap: break-word;
+  width: 14rem;
+  visibility: hidden;
+  z-index: 2;
+}
+
+.cus-avatar-dropdown--show {
+  visibility: visible;
+}
+
+.cus-dropdown-opt {
+  transition: background-color ease-in-out 0.3s;
+}
+
+.cus-dropdown-opt:hover {
+  background-color: rgba(156, 156, 156, 0.2);
+}

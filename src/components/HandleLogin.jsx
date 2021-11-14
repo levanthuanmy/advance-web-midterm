@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Button, Form, Modal } from "react-bootstrap"
-import { useCookies } from "react-cookie"
 import { useForm } from "react-hook-form"
+import Cookies from "universal-cookie"
 import { post } from "../api"
 
 const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
@@ -14,19 +14,27 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
     formState: { errors },
   } = useForm()
 
-  // eslint-disable-next-line no-unused-vars
-  const [cookies, setCookie] = useCookies(["token"])
+  const cookies = new Cookies()
 
   const userLogin = async (body) => {
     const res = await post("/users/login", {}, JSON.stringify(body))
     console.log("Login success")
-    setCookie("token", res?.token)
+    cookies.set("token", res?.token)
+    setIsShowLogin(false)
+    storeUserInfo(res?.user)
   }
 
   const userSignUp = async (body) => {
     const res = await post("/users", {}, JSON.stringify(body))
     console.log("Sign up success")
-    setCookie("token", res?.token)
+    cookies.set("token", res?.token)
+    setIsShowLogin(false)
+    storeUserInfo(res?.user)
+  }
+
+  const storeUserInfo = (res) => {
+    const localStorage = window?.localStorage
+    localStorage?.setItem("user-info", JSON.stringify(res))
   }
 
   const onSubmit = (data) => {

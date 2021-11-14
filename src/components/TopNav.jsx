@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react"
 import { Image } from "react-bootstrap"
 import { useLocation, useNavigate } from "react-router-dom"
+import Cookies from "universal-cookie"
+
+const tabs = [
+  { name: "Bảng tin", id: 0 },
+  { name: "Bài tập trên lớp", id: 1 },
+  { name: "Mọi người", id: 2 },
+  { name: "Số điểm", id: 3 },
+]
 
 const TopNav = ({
   showMenu,
@@ -13,17 +21,21 @@ const TopNav = ({
   const navigate = useNavigate()
   const location = useLocation()
   const [isClass, setIsClass] = useState(false)
+  const [isDropdown, setIsDropdown] = useState(false)
+
+  const cookies = new Cookies()
+
+  const userInfo = JSON.parse(window?.localStorage?.getItem("user-info"))
 
   const handleTabClicked = (id) => {
     setCurrentTab(+id)
   }
 
-  const tabs = [
-    { name: "Bảng tin", id: 0 },
-    { name: "Bài tập trên lớp", id: 1 },
-    { name: "Mọi người", id: 2 },
-    { name: "Số điểm", id: 3 },
-  ]
+  const handleLogoutClicked = () => {
+    cookies.remove("token")
+    navigate("/")
+    window?.location?.reload()
+  }
 
   useEffect(() => {
     const isInClass = location.pathname.includes("/c/")
@@ -82,6 +94,8 @@ const TopNav = ({
       <div
         id="right"
         className="cus-my-avatar bg-secondary rounded-circle me-3 cursor-pointer"
+        onMouseEnter={() => setIsDropdown(true)}
+        onMouseLeave={() => setIsDropdown(false)}
       >
         <Image
           src={`/images/default-user-${
@@ -90,6 +104,34 @@ const TopNav = ({
           fluid
           className="rounded-circle"
         />
+        <div
+          className={`cus-avatar-dropdown position-relative float-end ${
+            isDropdown && "cus-avatar-dropdown--show"
+          }`}
+        >
+          <div className="mt-2 bg-white border shadow-sm cus-rounded-dot75rem text-truncate">
+            <div className="pt-3 px-3 fw-bold d-flex justify-content-between align-items-center">
+              {userInfo?.name}
+              <i className="bi bi-x-lg" onClick={() => setIsDropdown(false)} />
+            </div>
+            <div className="mt-2 px-3 small fst-italic text-secondary">
+              {userInfo?.email}
+            </div>
+            <div className="mt-3 border-top p-3 d-flex justify-content-between">
+              <div className="cus-dropdown-opt text-center border cus-rounded-dot75rem p-2 text-secondary">
+                <i class="bi bi-pencil-square fs-4" />
+                <div className="small">Chỉnh sửa</div>
+              </div>
+              <div
+                className="cus-dropdown-opt text-center border cus-rounded-dot75rem p-2 text-secondary"
+                onClick={() => handleLogoutClicked()}
+              >
+                <i className="bi bi-box-arrow-left fs-4" />
+                <div className="small">Đăng xuất</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

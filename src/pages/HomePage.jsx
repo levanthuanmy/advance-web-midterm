@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Form, Modal, Button } from "react-bootstrap"
-import { useCookies } from "react-cookie"
 import { useForm } from "react-hook-form"
+import Cookies from "universal-cookie"
 import { post } from "../api"
 import ClassroomList from "../components/ClassroomList"
 
@@ -19,13 +19,14 @@ const HomePage = ({
     formState: { errors },
   } = useForm()
 
-  const [cookies] = useCookies(["token"])
+  const cookies = new Cookies()
+  
 
   const createClassroom = async (body) => {
     try {
       const headers = {
         "Content-Type": "application/json; charset=UTF-8",
-        Authorization: `Bearer ${cookies.token}`,
+        Authorization: `Bearer ${cookies.get('token')}`,
       }
 
       setIsLoading(true)

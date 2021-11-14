@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
+import Cookies from "universal-cookie"
 import { get } from "../../api"
 import CustomSpinner from "../../components/CustomSpinner"
+import HandleLogin from "../../components/HandleLogin"
 import ExercisePage from "./ExercisePage"
 import GradePage from "./GradePage"
 import Main from "./Main"
@@ -12,11 +14,19 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
 
   const [resClassroom, setResClassroom] = useState()
   const [isLoading, setIsLoading] = useState(true)
+  const [isShowLogin, setIsShowLogin] = useState(false)
+  const cookies = new Cookies()
 
   const getClassroom = async () => {
     try {
+      const headers = {
+        "Content-Type": "application/json; charset=UTF-8",
+        Authorization: `Bearer ${cookies.get("token")}`,
+      }
+
       !isLoading && setIsLoading(true)
-      const res = await get(`/classrooms/${id}`)
+      const res = await get(`/classrooms/${id}`, {}, headers)
+
       setResClassroom(res)
       getThemeColor(res.themeColor)
       setIsLoading(false)
@@ -27,9 +37,13 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
 
   useEffect(() => {
     window.scrollTo(0, 0)
-    getClassroom()
+    if (cookies.get("token")?.length) {
+      getClassroom()
+    } else {
+      setIsShowLogin(true)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id])
+  }, [id, cookies.get("token")])
 
   const renderMainContent = () => {
     if (currentTab === 0) return <Main resClassroom={resClassroom} />
@@ -43,6 +57,7 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
       <div className="w-100" style={{ maxWidth: "60rem" }}>
         {isLoading ? <CustomSpinner /> : renderMainContent()}
       </div>
+      <HandleLogin isShowLogin={isShowLogin} setIsShowLogin={setIsShowLogin} />
     </div>
   )
 }
