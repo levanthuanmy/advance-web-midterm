@@ -33,6 +33,7 @@ const TopNav = ({
 
   const handleLogoutClicked = () => {
     cookies.remove("token")
+    window.sessionStorage.removeItem("access_token");
     navigate("/")
     window?.location?.reload()
   }
