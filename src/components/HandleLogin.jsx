@@ -3,6 +3,7 @@ import { Button, Form, Modal } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 import Cookies from "universal-cookie"
 import { post } from "../api"
+import { googleLoginUrl } from '../config/GoogleAuth';
 
 const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   const [loginMode, setLoginMode] = useState(0)
@@ -156,7 +157,13 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
             </>
           )}
 
-          <div className="d-flex justify-content-end">
+          <div className="d-flex justify-content-space-between">
+          <Button
+              href={googleLoginUrl}
+              className="mt-4 rounded-circle cus-login-btn d-inline-flex justify-content-center align-items-center"
+            >
+              <i className="bi bi-google fs-1" />
+            </Button>
             <Button
               onClick={handleSubmit(onSubmit)}
               className="mt-4 rounded-circle cus-login-btn d-inline-flex justify-content-center align-items-center"

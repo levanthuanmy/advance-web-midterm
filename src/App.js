@@ -7,6 +7,8 @@ import LeftMenu from "./components/LeftMenu"
 import TopNav from "./components/TopNav"
 import ClassroomPage from "./pages/ClassroomPage"
 import HomePage from "./pages/HomePage"
+import * as queryString from 'query-string';
+import { getAccessTokenFromCode, getGoogleUserInfo } from './config/GoogleAuth'
 
 const App = () => {
   const [resClassrooms, setResClassrooms] = useState()
@@ -18,6 +20,8 @@ const App = () => {
   const [isShowLogin, setIsShowLogin] = useState(false)
 
   const cookies = new Cookies()
+
+  const [googleCode, setGoogleCode] = useState("")
 
 
   const ref = useRef(null)
@@ -56,6 +60,25 @@ const App = () => {
         console.log("remove scroll event")
       )
   }, [])
+
+  //use for Google login
+  useEffect(() => {
+    async function loginWithGoogle() { 
+      getAccessTokenFromCode(urlParams.code)
+      .then(token => {        
+        getGoogleUserInfo(token)
+        .then(userInfo => console.log("User info", userInfo))
+      });    
+    }
+    const urlParams = queryString.parse(window.location.search);
+      if (urlParams.error || urlParams.code === undefined) {
+        console.log(`An error occurred: ${urlParams.error}`);
+      } else {
+        setGoogleCode(urlParams.code);
+        console.log(`The code is: ${urlParams.code}`);
+        loginWithGoogle() 
+      }        
+  }, []);
 
   return (
     <>
