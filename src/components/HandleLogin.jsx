@@ -20,13 +20,13 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   const userLogin = async (body) => {
     const res = await post("/users/login", {}, JSON.stringify(body))
     console.log("Login success")
-    setCookie("token", res.token)
+    setCookie("token", res?.token)
   }
 
   const userSignUp = async (body) => {
     const res = await post("/users", {}, JSON.stringify(body))
     console.log("Sign up success")
-    setCookie("token", res.token)
+    setCookie("token", res?.token)
   }
 
   const onSubmit = (data) => {

@@ -40,7 +40,7 @@ const App = () => {
   }
 
   useEffect(() => {
-    if (cookies.token.length) {
+    if (cookies.token && cookies.token.length) {
       getClassrooms()
     }
     else {
