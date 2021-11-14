@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Image } from "react-bootstrap"
+import { set } from "react-hook-form"
 import { useLocation, useNavigate } from "react-router-dom"
 import Cookies from "universal-cookie"
 
@@ -22,10 +23,9 @@ const TopNav = ({
   const location = useLocation()
   const [isClass, setIsClass] = useState(false)
   const [isDropdown, setIsDropdown] = useState(false)
+  const [userInfo, setUserInfo] = useState()
 
   const cookies = new Cookies()
-
-  const userInfo = JSON.parse(window?.localStorage?.getItem("user-info"))
 
   const handleTabClicked = (id) => {
     setCurrentTab(+id)
@@ -33,7 +33,7 @@ const TopNav = ({
 
   const handleLogoutClicked = () => {
     cookies.remove("token")
-    window.sessionStorage.removeItem("access_token");
+    window.sessionStorage.removeItem("access_token")
     navigate("/")
     window?.location?.reload()
   }
@@ -42,6 +42,13 @@ const TopNav = ({
     const isInClass = location.pathname.includes("/c/")
     setIsClass(isInClass)
     !isInClass && setCurrentTab(0)
+
+    const userInfoStorage = window?.localStorage?.getItem("user-info")
+    if (userInfoStorage && userInfoStorage !== "undefined") {
+      setUserInfo(JSON.parse(userInfoStorage))
+    } else {
+      setUserInfo({ name: "", email: "" })
+    }
   }, [location.pathname, setCurrentTab])
 
   const renderDropDown = () => {

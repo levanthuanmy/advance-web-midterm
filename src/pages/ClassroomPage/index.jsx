@@ -14,7 +14,6 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
 
   const [resClassroom, setResClassroom] = useState()
   const [isLoading, setIsLoading] = useState(true)
-  const [isShowLogin, setIsShowLogin] = useState(false)
   const [isHost, setIsHost] = useState()
 
   const cookies = new Cookies()
@@ -50,8 +49,6 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
     window.scrollTo(0, 0)
     if (cookies.get("token")?.length) {
       getClassroom()
-    } else {
-      setIsShowLogin(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, cookies.get("token")])
@@ -69,7 +66,6 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
       <div className="w-100" style={{ maxWidth: "60rem" }}>
         {isLoading ? <CustomSpinner /> : renderMainContent()}
       </div>
-      <HandleLogin isShowLogin={isShowLogin} setIsShowLogin={setIsShowLogin} />
     </div>
   )
 }

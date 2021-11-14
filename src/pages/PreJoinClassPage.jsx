@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react"
 import { Button, Modal } from "react-bootstrap"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import Cookies from "universal-cookie"
 import { get } from "../api"
 import CustomSpinner from "../components/CustomSpinner"
 import useQuery from "../hooks/useQuery"
-import HandleLogin from "../components/HandleLogin"
 
-const PreJoinClassPage = ({ resClassrooms, setResClassrooms }) => {
+const PreJoinClassPage = () => {
+  const { id } = useParams()
   const navigate = useNavigate()
   const query = useQuery()
   const [isShow, setIsShow] = useState(true)
-  const [isShowLogin, setIsShowLogin] = useState(false)
 
   const cookies = new Cookies()
 
@@ -26,13 +25,12 @@ const PreJoinClassPage = ({ resClassrooms, setResClassrooms }) => {
     await get(`/classrooms/join/${classCode}`, {}, headers)
 
     setIsShow(false)
+    navigate(`/c/${id}`)
   }
 
   useEffect(() => {
     if (cookies.get("token")?.length) {
       joinClassroom()
-    } else {
-      setIsShowLogin(true)
     }
   }, [cookies.get("token")])
 
@@ -60,8 +58,6 @@ const PreJoinClassPage = ({ resClassrooms, setResClassrooms }) => {
           Quay lại
         </Button>
       </Modal.Body>
-
-      <HandleLogin isShowLogin={isShowLogin} setIsShowLogin={setIsShowLogin} />
     </Modal>
   )
 }

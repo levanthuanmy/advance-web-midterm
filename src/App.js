@@ -92,7 +92,7 @@ const App = () => {
             }
             />
 
-            <Route path="/c/:id/join" element={<PreJoinClassPage resClassrooms={resClassrooms} setResClassrooms={setResClassrooms} />} />
+            <Route path="/c/:id/join" element={<PreJoinClassPage />} />
           </Routes>
         </div>
 
