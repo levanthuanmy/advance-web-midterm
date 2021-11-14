@@ -43,6 +43,39 @@ const TopNav = ({
     !isInClass && setCurrentTab(0)
   }, [location.pathname, setCurrentTab])
 
+  const renderDropDown = () => {
+    return (
+      <div
+        className={`cus-avatar-dropdown position-relative float-end ${
+          isDropdown && "cus-avatar-dropdown--show"
+        }`}
+      >
+        <div className="mt-2 bg-white border shadow-sm cus-rounded-dot75rem text-truncate">
+          <div className="pt-3 px-3 fw-bold d-flex justify-content-between align-items-center">
+            {userInfo?.name}
+            <i className="bi bi-x-lg" onClick={() => setIsDropdown(false)} />
+          </div>
+          <div className="mt-2 px-3 small fst-italic text-secondary">
+            {userInfo?.email}
+          </div>
+          <div className="mt-3 border-top p-3 d-flex justify-content-between">
+            <div className="cus-dropdown-opt text-center border cus-rounded-dot75rem p-2 text-secondary">
+              <i className="bi bi-pencil-square fs-4" />
+              <div className="small">Chỉnh sửa</div>
+            </div>
+            <div
+              className="cus-dropdown-opt text-center border cus-rounded-dot75rem p-2 text-secondary"
+              onClick={() => handleLogoutClicked()}
+            >
+              <i className="bi bi-box-arrow-left fs-4" />
+              <div className="small">Đăng xuất</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div
       className={`w-100 bg-white cus-top-nav d-flex align-items-center justify-content-between border-bottom ${
@@ -104,34 +137,7 @@ const TopNav = ({
           fluid
           className="rounded-circle"
         />
-        <div
-          className={`cus-avatar-dropdown position-relative float-end ${
-            isDropdown && "cus-avatar-dropdown--show"
-          }`}
-        >
-          <div className="mt-2 bg-white border shadow-sm cus-rounded-dot75rem text-truncate">
-            <div className="pt-3 px-3 fw-bold d-flex justify-content-between align-items-center">
-              {userInfo?.name}
-              <i className="bi bi-x-lg" onClick={() => setIsDropdown(false)} />
-            </div>
-            <div className="mt-2 px-3 small fst-italic text-secondary">
-              {userInfo?.email}
-            </div>
-            <div className="mt-3 border-top p-3 d-flex justify-content-between">
-              <div className="cus-dropdown-opt text-center border cus-rounded-dot75rem p-2 text-secondary">
-                <i class="bi bi-pencil-square fs-4" />
-                <div className="small">Chỉnh sửa</div>
-              </div>
-              <div
-                className="cus-dropdown-opt text-center border cus-rounded-dot75rem p-2 text-secondary"
-                onClick={() => handleLogoutClicked()}
-              >
-                <i className="bi bi-box-arrow-left fs-4" />
-                <div className="small">Đăng xuất</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {renderDropDown()}
       </div>
     </div>
   )

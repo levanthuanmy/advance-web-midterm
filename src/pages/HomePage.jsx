@@ -32,7 +32,6 @@ const HomePage = ({
       setIsLoading(true)
 
       const res = await post(`/create-classroom`, {}, body, headers)
-      console.log("createClassroom ⟩ res", res)
 
       setResClassrooms([...resClassrooms, res])
       setIsLoading(false)

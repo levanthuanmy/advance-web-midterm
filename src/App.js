@@ -1,3 +1,4 @@
+import * as queryString from 'query-string'
 import React, { useEffect, useRef, useState } from "react"
 import { Route, Routes } from "react-router-dom"
 import Cookies from 'universal-cookie'
@@ -5,10 +6,10 @@ import { get } from "./api"
 import HandleLogin from "./components/HandleLogin"
 import LeftMenu from "./components/LeftMenu"
 import TopNav from "./components/TopNav"
+import { getAccessTokenFromCode, getGoogleUserInfo } from './config/GoogleAuth'
 import ClassroomPage from "./pages/ClassroomPage"
 import HomePage from "./pages/HomePage"
-import * as queryString from 'query-string';
-import { getAccessTokenFromCode, getGoogleUserInfo } from './config/GoogleAuth'
+import PreJoinClassPage from "./pages/PreJoinClassPage"
 
 const App = () => {
   const [resClassrooms, setResClassrooms] = useState()
@@ -62,23 +63,26 @@ const App = () => {
   }, [])
 
   //use for Google login
+
+  const loginWithGoogle = async (code) => {
+    const token = await getAccessTokenFromCode(code)
+    const userInfo = await getGoogleUserInfo(token)
+    console.log('loginWithGoogle ⟩ userInfo', userInfo)
+  }
+
   useEffect(() => {
-    async function loginWithGoogle() { 
-      getAccessTokenFromCode(urlParams.code)
-      .then(token => {        
-        getGoogleUserInfo(token)
-        .then(userInfo => console.log("User info", userInfo))
-      });    
+    const urlParams = queryString.parse(window.location.search)
+
+    if (urlParams.error || urlParams.code === undefined) {
+      console.log(`An error occurred: ${urlParams.error}`)
+    } else {
+      setGoogleCode(urlParams.code)
+      console.log(`The code is: ${urlParams.code}`)
+      loginWithGoogle(urlParams.code)
     }
-    const urlParams = queryString.parse(window.location.search);
-      if (urlParams.error || urlParams.code === undefined) {
-        console.log(`An error occurred: ${urlParams.error}`);
-      } else {
-        setGoogleCode(urlParams.code);
-        console.log(`The code is: ${urlParams.code}`);
-        loginWithGoogle() 
-      }        
-  }, []);
+  }, [])
+
+  //----------------------
 
   return (
     <>
@@ -114,6 +118,8 @@ const App = () => {
               <ClassroomPage getThemeColor={setThemeColor} currentTab={currentTab} />
             }
             />
+
+            <Route path="/c/:id/join" element={<PreJoinClassPage resClassrooms={resClassrooms} setResClassrooms={setResClassrooms} />} />
           </Routes>
         </div>
 

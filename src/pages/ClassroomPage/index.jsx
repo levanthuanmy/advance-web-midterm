@@ -15,6 +15,8 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
   const [resClassroom, setResClassroom] = useState()
   const [isLoading, setIsLoading] = useState(true)
   const [isShowLogin, setIsShowLogin] = useState(false)
+  const [isHost, setIsHost] = useState()
+
   const cookies = new Cookies()
 
   const getClassroom = async () => {
@@ -36,6 +38,15 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
   }
 
   useEffect(() => {
+    if (resClassroom?.teachers) {
+      const checkHost =
+        JSON.parse(window?.localStorage?.getItem("user-info"))?._id ===
+        resClassroom?.teachers[0]
+      setIsHost(checkHost)
+    }
+  }, [resClassroom])
+
+  useEffect(() => {
     window.scrollTo(0, 0)
     if (cookies.get("token")?.length) {
       getClassroom()
@@ -46,7 +57,8 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
   }, [id, cookies.get("token")])
 
   const renderMainContent = () => {
-    if (currentTab === 0) return <Main resClassroom={resClassroom} />
+    if (currentTab === 0)
+      return <Main resClassroom={resClassroom} isHost={isHost} />
     if (currentTab === 1) return <ExercisePage />
     if (currentTab === 2) return <MemberPage />
     if (currentTab === 3) return <GradePage />

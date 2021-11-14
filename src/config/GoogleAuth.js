@@ -1,16 +1,16 @@
-import * as queryString from "query-string";
-import { CLIENT_ID, CLIENT_SECRET, API_URL } from "./constants";
-import axios from "axios";
+import axios from "axios"
+import * as queryString from "query-string"
+import { CLIENT_ID, CLIENT_SECRET } from "./constants"
 
-export function getAccessTokenFromCode(code) {  
+export function getAccessTokenFromCode(code) {
   var data = require("qs").stringify({
     code: code,
     client_id: CLIENT_ID,
     client_secret: CLIENT_SECRET,
     redirect_uri: "http://localhost:3001/guguuLogin",
     grant_type: "authorization_code",
-  });  
-  
+  })
+
   var config = {
     method: "post",
     url: "https://oauth2.googleapis.com/token",
@@ -18,16 +18,16 @@ export function getAccessTokenFromCode(code) {
       "Content-Type": "application/x-www-form-urlencoded",
     },
     data: data,
-  };
-    return axios(config)
+  }
+  return axios(config)
     .then(function (response) {
-      console.log("qwdqwdwq", );
-      return response.data.access_token;
+      console.log("qwdqwdwq",)
+      return response.data.access_token
     })
     .catch(function (error) {
-      console.log(error);
-      return null;
-    });  
+      console.log(error)
+      return null
+    })
 
 }
 
@@ -38,8 +38,8 @@ export async function getGoogleUserInfo(access_token) {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
-  });
-  return data;
+  })
+  return data
 }
 
 const stringifiedParams = queryString.stringify({
@@ -52,6 +52,6 @@ const stringifiedParams = queryString.stringify({
   response_type: "code",
   access_type: "offline",
   prompt: "consent",
-});
+})
 
-export const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?${stringifiedParams}`;
+export const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?${stringifiedParams}`
