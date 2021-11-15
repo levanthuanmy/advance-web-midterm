@@ -32,10 +32,11 @@ const TopNav = ({
   }
 
   const handleLogoutClicked = () => {
-    cookies.remove("token")
-    window.sessionStorage.removeItem("access_token")
     navigate("/")
+    cookies.remove("token")
+    window?.sessionStorage?.removeItem("access_token")
     window?.location?.reload()
+    window?.localStorage?.clear()
   }
 
   useEffect(() => {

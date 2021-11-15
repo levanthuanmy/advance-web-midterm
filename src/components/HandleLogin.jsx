@@ -57,8 +57,8 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   const userSignUp = async (body) => {
     setIsLoading(true)
 
-    const res = await post("/users", {}, body)
-    console.log("Sign up success")
+    const res = await post("/users", {}, JSON.stringify(body))
+    console.log("userSignUp - res", res)
 
     storeUserInfo(res?.user)
     cookies.set("token", res?.token)
