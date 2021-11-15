@@ -20,13 +20,12 @@ const HomePage = ({
   } = useForm()
 
   const cookies = new Cookies()
-  
 
   const createClassroom = async (body) => {
     try {
       const headers = {
         "Content-Type": "application/json; charset=UTF-8",
-        Authorization: `Bearer ${cookies.get('token')}`,
+        Authorization: `Bearer ${cookies.get("token")}`,
       }
 
       setIsLoading(true)
@@ -41,7 +40,7 @@ const HomePage = ({
   }
 
   const onSubmit = (data) => {
-    createClassroom(JSON.stringify(data))
+    createClassroom(data)
     onHideModal()
   }
 

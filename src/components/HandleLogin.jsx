@@ -30,11 +30,12 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   const userLogin = async (body) => {
     setIsLoading(true)
 
-    const res = await post("/users/login", {}, JSON.stringify(body))
+    const res = await post("/users/login", {}, body)
 
     console.log("Login success")
 
     storeUserInfo(res?.user)
+    cookies.set("token", res?.token)
 
     setIsLoading(false)
     setIsShowLogin(false)
@@ -43,7 +44,7 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   }
 
   const userLoginWithGoogle = async (body) => {
-    const res = await post("/users/loginWithGoogle", {}, JSON.stringify(body))
+    const res = await post("/users/loginWithGoogle", {}, body)
     // if (res && res.token && res.user) {
     console.log("Login success")
     cookies.set("token", res?.token)
@@ -56,10 +57,11 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   const userSignUp = async (body) => {
     setIsLoading(true)
 
-    const res = await post("/users", {}, JSON.stringify(body))
+    const res = await post("/users", {}, body)
     console.log("Sign up success")
 
     storeUserInfo(res?.user)
+    cookies.set("token", res?.token)
 
     setIsLoading(true)
     setIsShowLogin(false)
