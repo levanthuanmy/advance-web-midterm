@@ -99,6 +99,94 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
     userLoginWithGoogle(body)
   }
 
+  const renderSignInForm = () => {
+    return (
+      <>
+        <Form.Group>
+          <Form.Control
+            className="cus-rounded-dot75rem py-2 px-3"
+            type="text"
+            placeholder="Email"
+            {...register("signInEmail", {
+              required: "Bạn cần nhập email",
+              pattern: emailPattern,
+            })}
+          />
+          {errors.signInEmail && (
+            <small className="text-danger">{errors.signInEmail?.message}</small>
+          )}
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Control
+            className="cus-rounded-dot75rem py-2 px-3 mt-3"
+            type="password"
+            placeholder="Mật khẩu"
+            {...register("signInPassword", {
+              required: "Bạn cần nhập mật khẩu",
+              minLength: minLengthPassword,
+            })}
+          />
+          {errors.signInPassword && (
+            <small className="text-danger">
+              {errors.signInPassword?.message}
+            </small>
+          )}
+        </Form.Group>
+      </>
+    )
+  }
+
+  const renderSignUpForm = () => {
+    return (
+      <>
+        <Form.Group>
+          <Form.Control
+            className="cus-rounded-dot75rem py-2 px-3"
+            type="email"
+            placeholder="Email"
+            {...register("signUpEmail", {
+              required: "Bạn cần nhập email",
+              pattern: emailPattern,
+            })}
+          />
+          {errors.signUpEmail && (
+            <small className="text-danger">{errors.signUpEmail?.message}</small>
+          )}
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Control
+            className="cus-rounded-dot75rem py-2 px-3 mt-3"
+            type="text"
+            placeholder="Tên đầy đủ"
+            {...register("signUpName", { required: true })}
+          />
+          {errors.signUpName && (
+            <small className="text-danger">Bạn cần nhập tên</small>
+          )}
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Control
+            className="cus-rounded-dot75rem py-2 px-3 mt-3"
+            type="password"
+            placeholder="Mật khẩu"
+            {...register("signUpPassword", {
+              required: "Bạn cần nhập mật khẩu",
+              minLength: minLengthPassword,
+            })}
+          />
+          {errors.signUpPassword && (
+            <small className="text-danger">
+              {errors.signUpPassword?.message}
+            </small>
+          )}
+        </Form.Group>
+      </>
+    )
+  }
+
   return (
     <Modal
       show={isShowLogin}
@@ -139,91 +227,7 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
             </div>
           </div>
 
-          {loginMode ? (
-            <>
-              <Form.Group>
-                <Form.Control
-                  className="cus-rounded-dot75rem py-2 px-3"
-                  type="email"
-                  placeholder="Email"
-                  {...register("signUpEmail", {
-                    required: "Bạn cần nhập email",
-                    pattern: emailPattern,
-                  })}
-                />
-                {errors.signUpEmail && (
-                  <small className="text-danger">
-                    {errors.signUpEmail?.message}
-                  </small>
-                )}
-              </Form.Group>
-
-              <Form.Group>
-                <Form.Control
-                  className="cus-rounded-dot75rem py-2 px-3 mt-3"
-                  type="text"
-                  placeholder="Tên đầy đủ"
-                  {...register("signUpName", { required: true })}
-                />
-                {errors.signUpName && (
-                  <small className="text-danger">Bạn cần nhập tên</small>
-                )}
-              </Form.Group>
-
-              <Form.Group>
-                <Form.Control
-                  className="cus-rounded-dot75rem py-2 px-3 mt-3"
-                  type="password"
-                  placeholder="Mật khẩu"
-                  {...register("signUpPassword", {
-                    required: "Bạn cần nhập mật khẩu",
-                    minLength: minLengthPassword,
-                  })}
-                />
-                {errors.signUpPassword && (
-                  <small className="text-danger">
-                    {errors.signUpPassword?.message}
-                  </small>
-                )}
-              </Form.Group>
-            </>
-          ) : (
-            <>
-              <Form.Group>
-                <Form.Control
-                  className="cus-rounded-dot75rem py-2 px-3"
-                  type="text"
-                  placeholder="Email"
-                  {...register("signInEmail", {
-                    required: "Bạn cần nhập email",
-                    pattern: emailPattern,
-                  })}
-                />
-                {errors.signInEmail && (
-                  <small className="text-danger">
-                    {errors.signInEmail?.message}
-                  </small>
-                )}
-              </Form.Group>
-
-              <Form.Group>
-                <Form.Control
-                  className="cus-rounded-dot75rem py-2 px-3 mt-3"
-                  type="password"
-                  placeholder="Mật khẩu"
-                  {...register("signInPassword", {
-                    required: "Bạn cần nhập mật khẩu",
-                    minLength: minLengthPassword,
-                  })}
-                />
-                {errors.signInPassword && (
-                  <small className="text-danger">
-                    {errors.signInPassword?.message}
-                  </small>
-                )}
-              </Form.Group>
-            </>
-          )}
+          {loginMode ? renderSignUpForm() : renderSignInForm()}
 
           <div className="d-flex justify-content-between">
             <Button
