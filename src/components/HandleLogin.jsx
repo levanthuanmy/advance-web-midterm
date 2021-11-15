@@ -7,6 +7,7 @@ import { googleLoginUrl } from "../config/GoogleAuth"
 import * as queryString from "query-string"
 import { getAccessTokenFromCode, getGoogleUserInfo } from "../config/GoogleAuth"
 import { useNavigate } from "react-router-dom"
+import { emailPattern, minLengthPassword } from "../config/constants"
 
 const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   const [loginMode, setLoginMode] = useState(0)
@@ -30,6 +31,7 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
     cookies.set("token", res?.token)
     setIsShowLogin(false)
     storeUserInfo(res?.user)
+    window?.location?.reload()
   }
 
   const userLoginWithGoogle = async (body) => {
@@ -40,6 +42,7 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
     setIsShowLogin(false)
     storeUserInfo(res?.user)
     navigate("/")
+    window?.location?.reload()
   }
 
   const userSignUp = async (body) => {
@@ -48,6 +51,7 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
     cookies.set("token", res?.token)
     setIsShowLogin(false)
     storeUserInfo(res?.user)
+    window?.location?.reload()
   }
 
   const storeUserInfo = (res) => {
@@ -140,12 +144,17 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
               <Form.Group>
                 <Form.Control
                   className="cus-rounded-dot75rem py-2 px-3"
-                  type="text"
+                  type="email"
                   placeholder="Email"
-                  {...register("signUpEmail", { required: true })}
+                  {...register("signUpEmail", {
+                    required: "Bạn cần nhập email",
+                    pattern: emailPattern,
+                  })}
                 />
                 {errors.signUpEmail && (
-                  <small className="text-danger">Bạn cần nhập email</small>
+                  <small className="text-danger">
+                    {errors.signUpEmail?.message}
+                  </small>
                 )}
               </Form.Group>
 
@@ -166,10 +175,15 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
                   className="cus-rounded-dot75rem py-2 px-3 mt-3"
                   type="password"
                   placeholder="Mật khẩu"
-                  {...register("signUpPassword", { required: true })}
+                  {...register("signUpPassword", {
+                    required: "Bạn cần nhập mật khẩu",
+                    minLength: minLengthPassword,
+                  })}
                 />
                 {errors.signUpPassword && (
-                  <small className="text-danger">Bạn cần nhập mật khẩu</small>
+                  <small className="text-danger">
+                    {errors.signUpPassword?.message}
+                  </small>
                 )}
               </Form.Group>
             </>
@@ -180,10 +194,15 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
                   className="cus-rounded-dot75rem py-2 px-3"
                   type="text"
                   placeholder="Email"
-                  {...register("signInEmail", { required: true })}
+                  {...register("signInEmail", {
+                    required: "Bạn cần nhập email",
+                    pattern: emailPattern,
+                  })}
                 />
                 {errors.signInEmail && (
-                  <small className="text-danger">Bạn cần nhập email</small>
+                  <small className="text-danger">
+                    {errors.signInEmail?.message}
+                  </small>
                 )}
               </Form.Group>
 
@@ -192,10 +211,15 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
                   className="cus-rounded-dot75rem py-2 px-3 mt-3"
                   type="password"
                   placeholder="Mật khẩu"
-                  {...register("signInPassword", { required: true })}
+                  {...register("signInPassword", {
+                    required: "Bạn cần nhập mật khẩu",
+                    minLength: minLengthPassword,
+                  })}
                 />
                 {errors.signInPassword && (
-                  <small className="text-danger">Bạn cần nhập mật khẩu</small>
+                  <small className="text-danger">
+                    {errors.signInPassword?.message}
+                  </small>
                 )}
               </Form.Group>
             </>
@@ -210,7 +234,8 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
             </Button>
 
             <Button
-              onClick={handleSubmit(onSubmit)}
+              type="submit"
+              onClick={() => handleSubmit(onSubmit)}
               className="mt-4 rounded-circle cus-login-btn d-inline-flex justify-content-center align-items-center"
             >
               <i className="bi bi-arrow-right-short fs-1" />

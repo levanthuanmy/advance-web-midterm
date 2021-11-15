@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom"
 import Cookies from "universal-cookie"
 import { get } from "../../api"
 import CustomSpinner from "../../components/CustomSpinner"
-import HandleLogin from "../../components/HandleLogin"
 import ExercisePage from "./ExercisePage"
 import GradePage from "./GradePage"
 import Main from "./Main"
@@ -57,7 +56,7 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
     if (currentTab === 0)
       return <Main resClassroom={resClassroom} isHost={isHost} />
     if (currentTab === 1) return <ExercisePage />
-    if (currentTab === 2) return <MemberPage />
+    if (currentTab === 2) return <MemberPage idClass={id} />
     if (currentTab === 3) return <GradePage />
   }
 
