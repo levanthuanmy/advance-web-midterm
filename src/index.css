@@ -166,6 +166,10 @@ code {
   border: none !important;
 }
 
+.cus-rounded-1dot5rem {
+  border-radius: 1.5rem;
+}
+
 .cus-title-login-modal {
   border-top-left-radius: 1.5rem;
   border-top-right-radius: 1.5rem;

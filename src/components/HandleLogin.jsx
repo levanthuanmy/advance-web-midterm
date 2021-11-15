@@ -8,6 +8,7 @@ import * as queryString from "query-string"
 import { getAccessTokenFromCode, getGoogleUserInfo } from "../config/GoogleAuth"
 import { useNavigate } from "react-router-dom"
 import { emailPattern, minLengthPassword } from "../config/constants"
+import CustomSpinner from "../components/CustomSpinner"
 
 const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   const [loginMode, setLoginMode] = useState(0)
@@ -24,13 +25,20 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   const navigate = useNavigate()
 
   const [googleCode, setGoogleCode] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   const userLogin = async (body) => {
+    setIsLoading(true)
+
     const res = await post("/users/login", {}, JSON.stringify(body))
+
     console.log("Login success")
-    cookies.set("token", res?.token)
-    setIsShowLogin(false)
+
     storeUserInfo(res?.user)
+
+    setIsLoading(false)
+    setIsShowLogin(false)
+
     window?.location?.reload()
   }
 
@@ -46,11 +54,16 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   }
 
   const userSignUp = async (body) => {
+    setIsLoading(true)
+
     const res = await post("/users", {}, JSON.stringify(body))
     console.log("Sign up success")
-    cookies.set("token", res?.token)
-    setIsShowLogin(false)
+
     storeUserInfo(res?.user)
+
+    setIsLoading(true)
+    setIsShowLogin(false)
+
     window?.location?.reload()
   }
 
@@ -231,6 +244,7 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
 
           <div className="d-flex justify-content-between">
             <Button
+              disabled={isLoading}
               href={googleLoginUrl}
               className="mt-4 rounded-circle cus-login-btn d-inline-flex justify-content-center align-items-center"
             >
@@ -238,6 +252,7 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
             </Button>
 
             <Button
+              disabled={isLoading}
               type="submit"
               onClick={() => handleSubmit(onSubmit)}
               className="mt-4 rounded-circle cus-login-btn d-inline-flex justify-content-center align-items-center"
@@ -247,6 +262,11 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
           </div>
         </Form>
       </Modal.Body>
+      {isLoading && (
+        <div className="position-absolute top-0 left-0 bg-dark bg-opacity-50 cus-rounded-1dot5rem w-100 h-100">
+          <CustomSpinner />
+        </div>
+      )}
     </Modal>
   )
 }
