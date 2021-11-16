@@ -43,6 +43,8 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
 
       window?.location?.reload()
     } catch (error) {
+      setIsLoading(false)
+      alert(error)
       console.log("userLogin - error", error)
     }
   }
@@ -73,6 +75,8 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
 
       window?.location?.reload()
     } catch (error) {
+      setIsLoading(false)
+      alert(error)
       console.log("userSignUp - error", error)
     }
   }
