@@ -95,10 +95,10 @@ const Main = ({ resClassroom, isHost }) => {
     window?.location?.reload()
   }
 
-  const onSubmitEmail = (data) => {
+  const onSubmitEmail = () => {
     const inviteLink =
       window?.location?.href + `/join?code=${resClassroom?.code}`
-    !isSending && sendEmail(inviteLink, data.toEmail)
+    !isSending && sendEmail(inviteLink, getValues("toEmail"))
     reset()
   }
 
@@ -277,7 +277,12 @@ const Main = ({ resClassroom, isHost }) => {
           {isSending && (
             <Spinner size="sm" variant="secondary" animation="border" />
           )}
-          <Button variant="primary" type="submit" disabled={isSending}>
+          <Button
+            variant="primary"
+            type="submit"
+            disabled={isSending}
+            onClick={() => onSubmitEmail()}
+          >
             Gửi
           </Button>
         </Modal.Footer>
@@ -295,9 +300,7 @@ const Main = ({ resClassroom, isHost }) => {
             type="text"
             disabled={isDisableInput}
             defaultValue={resClassroom?.name}
-            {...register("className", {
-              required: "Bạn cần nhập tên lớp",
-            })}
+            {...register("className")}
           />
           {errors.className && (
             <small className="text-danger">{errors.className?.message}</small>
