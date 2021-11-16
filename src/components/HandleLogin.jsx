@@ -223,7 +223,7 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
       keyboard={false}
       className="cus-bg-special-pattern"
     >
-      <div className="w-100 cus-title-login-modal text-white h2 m-0 d-flex flex-column justify-content-end align-items-center">
+      <div className="w-100 cus-title-login-modal text-white text-center h2 m-0 d-flex flex-column justify-content-end align-items-center">
         <div className="mb-3">
           Chào mừng đến với <strong>My Classroom</strong>
         </div>

@@ -68,7 +68,10 @@ const TopNav = ({
             {userInfo?.email}
           </div>
           <div className="mt-3 border-top p-3 d-flex justify-content-between">
-            <div className="cus-dropdown-opt text-center border cus-rounded-dot75rem p-2 text-secondary">
+            <div
+              className="cus-dropdown-opt text-center border cus-rounded-dot75rem p-2 text-secondary"
+              onClick={() => navigate("/user-info")}
+            >
               <i className="bi bi-pencil-square fs-4" />
               <div className="small">Chỉnh sửa</div>
             </div>
@@ -135,16 +138,14 @@ const TopNav = ({
 
       <div
         id="right"
-        className="cus-my-avatar bg-secondary rounded-circle me-3 cursor-pointer"
+        className="cus-my-avatar bg-white rounded-circle me-3 cursor-pointer"
         onMouseEnter={() => setIsDropdown(true)}
         onMouseLeave={() => setIsDropdown(false)}
       >
         <Image
-          src={`/images/default-user-${
-            Math.floor(Math.random() * 2) ? "wo" : ""
-          }man.png`}
+          src={`/images/avatar.png`}
           fluid
-          className="rounded-circle"
+          className="rounded-circle border"
         />
         {renderDropDown()}
       </div>

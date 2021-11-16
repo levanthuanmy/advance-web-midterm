@@ -302,9 +302,6 @@ const Main = ({ resClassroom, isHost }) => {
             defaultValue={resClassroom?.name}
             {...register("className")}
           />
-          {errors.className && (
-            <small className="text-danger">{errors.className?.message}</small>
-          )}
         </Form.Group>
         <Form.Group className="p-3 pt-0">
           <Form.Label>ID</Form.Label>

@@ -8,6 +8,7 @@ import TopNav from "./components/TopNav"
 import ClassroomPage from "./pages/ClassroomPage"
 import HomePage from "./pages/HomePage"
 import PreJoinClassPage from "./pages/PreJoinClassPage"
+import UserInformationPage from "./pages/UserInformationPage"
 
 const App = () => {
   const [resClassrooms, setResClassrooms] = useState()
@@ -96,6 +97,8 @@ const App = () => {
             />
 
             <Route path="/c/:id/join" element={<PreJoinClassPage />} />
+
+            <Route path="/user-info" element={<UserInformationPage />} />
           </Routes>
         </div>
 

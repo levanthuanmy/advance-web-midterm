@@ -36,11 +36,9 @@ const MemberPage = ({ idClass }) => {
       <div key={id} className="d-flex border-bottom p-3 align-items-center">
         <div className="fs-3 me-3">#{id + 1}</div>
         <Image
-          src={`/images/default-user-${
-            Math.floor(Math.random() * 2) ? "wo" : ""
-          }man.png`}
+          src={`/images/avatar.png`}
           fluid
-          className="rounded-circle"
+          className="rounded-circle border bg-white"
           style={{ width: "3rem", height: "3rem" }}
         />
         <div className="h6 ps-3 small m-0">{item?.name}</div>

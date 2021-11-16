@@ -7,11 +7,9 @@ const ClassroomCard = ({ classroom }) => {
     <div className="cus-classroom-card__avatar position-relative w-100">
       <div className="cus-classroom-card__avatar__img rounded-circle h-100 bg-white">
         <Image
-          src={`/images/default-user-${
-            Math.floor(Math.random() * 2) ? "wo" : ""
-          }man.png`}
+          src={`/images/avatar.png`}
           fluid
-          className="rounded-circle"
+          className="rounded-circle border"
         />
       </div>
     </div>
