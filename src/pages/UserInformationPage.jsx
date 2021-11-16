@@ -224,6 +224,7 @@ const UserInformationPage = () => {
                 <Form.Label>Đổi mật khẩu</Form.Label>
                 <InputGroup>
                   <FormControl
+                    type="password"
                     aria-describedby="basic-addon2"
                     className="cus-rounded-dot75rem py-2 px-3"
                     disabled={isDisablePass}
