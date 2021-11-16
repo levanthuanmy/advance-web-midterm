@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { Route, Routes } from "react-router-dom"
 import Cookies from 'universal-cookie'
 import { get } from "./api"
@@ -17,7 +17,11 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [themeColor, setThemeColor] = useState()
   const [isShowLogin, setIsShowLogin] = useState(false)
-  const cookies = new Cookies()
+
+  const [token] = useState(new Cookies().get('token'))
+  // const cookies = new Cookies()
+
+  // return cookies.get('token')}, [cookies])
 
   const ref = useRef(null)
 
@@ -27,7 +31,7 @@ const App = () => {
 
   const getClassrooms = async () => {
     try {
-      const headers = { 'Content-Type': 'application/json; charset=UTF-8', 'Authorization': `Bearer ${cookies.get('token')}` }
+      const headers = { 'Content-Type': 'application/json; charset=UTF-8', 'Authorization': `Bearer ${token}` }
 
       const res = await get(`/classrooms`, {}, headers)
 
@@ -39,14 +43,13 @@ const App = () => {
   }
 
   useEffect(() => {
-    if (cookies.get('token')?.length && cookies.get('token') !== 'undefined') {
+    if (token?.length && token !== 'undefined') {
       getClassrooms()
     }
     else {
       setIsShowLogin(true)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cookies.get('token')])
+  }, [token])
 
   useEffect(() => {
     window.addEventListener("scroll", () => handleWindowScroll())

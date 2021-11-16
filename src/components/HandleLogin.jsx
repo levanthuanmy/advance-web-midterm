@@ -28,19 +28,23 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const userLogin = async (body) => {
-    setIsLoading(true)
+    try {
+      setIsLoading(true)
 
-    const res = await post("/users/login", {}, body)
+      const res = await post("/users/login", {}, body)
 
-    console.log("Login success")
+      console.log("Login success")
 
-    storeUserInfo(res?.user)
-    cookies.set("token", res?.token)
+      storeUserInfo(res?.user)
+      cookies.set("token", res?.token)
 
-    setIsLoading(false)
-    setIsShowLogin(false)
+      setIsLoading(false)
+      setIsShowLogin(false)
 
-    window?.location?.reload()
+      window?.location?.reload()
+    } catch (error) {
+      console.log("userLogin - error", error)
+    }
   }
 
   const userLoginWithGoogle = async (body) => {
@@ -55,18 +59,22 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   }
 
   const userSignUp = async (body) => {
-    setIsLoading(true)
+    try {
+      setIsLoading(true)
 
-    const res = await post("/users", {}, JSON.stringify(body))
-    console.log("userSignUp - res", res)
+      const res = await post("/users", {}, JSON.stringify(body))
+      console.log("userSignUp - res", res)
 
-    storeUserInfo(res?.user)
-    cookies.set("token", res?.token)
+      storeUserInfo(res?.user)
+      cookies.set("token", res?.token)
 
-    setIsLoading(true)
-    setIsShowLogin(false)
+      setIsLoading(true)
+      setIsShowLogin(false)
 
-    window?.location?.reload()
+      window?.location?.reload()
+    } catch (error) {
+      console.log("userSignUp - error", error)
+    }
   }
 
   const storeUserInfo = (res) => {

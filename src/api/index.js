@@ -19,6 +19,8 @@ export const get = async (path, params, headers, responseType = 'json') => {
       console.log(error.response.data)
       console.log(error.response.status)
       console.log(error.response.headers)
+      throw error.response.error
+
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
@@ -29,6 +31,8 @@ export const get = async (path, params, headers, responseType = 'json') => {
       console.log('Error', error.message)
     }
     console.log(error.config)
+    throw error
+
   }
 }
 
@@ -43,6 +47,7 @@ export const post = async (path, params, data, headers) => {
       console.log(error.response.data)
       console.log(error.response.status)
       console.log(error.response.headers)
+      throw error.response.error
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
@@ -53,6 +58,7 @@ export const post = async (path, params, data, headers) => {
       console.log('Error', error.message)
     }
     console.log(error.config)
+    throw error
   }
 }
 
@@ -67,6 +73,8 @@ export const patch = async (path, params, data, headers) => {
       console.log(error.response.data)
       console.log(error.response.status)
       console.log(error.response.headers)
+      throw error.response.error
+
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
@@ -77,5 +85,7 @@ export const patch = async (path, params, data, headers) => {
       console.log('Error', error.message)
     }
     console.log(error.config)
+    throw error
+
   }
 }
