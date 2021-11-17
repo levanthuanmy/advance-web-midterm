@@ -114,8 +114,9 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
 
   const loginWithGoogle = async (code) => {
     const token = await getAccessTokenFromCode(code)
+    console.log("loginWithGoogle token", token)
     const userInfo = await getGoogleUserInfo(token)
-    console.log("loginWithGoogle ⟩ userInfo", userInfo)
+    console.log("loginWithGoogle userInfo", userInfo)
 
     const body = {
       name: userInfo.name,
