@@ -56,7 +56,8 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
     if (currentTab === 0)
       return <Main resClassroom={resClassroom} isHost={isHost} />
     if (currentTab === 1) return <ExercisePage />
-    if (currentTab === 2) return <MemberPage idClass={id} />
+    if (currentTab === 2)
+      return <MemberPage idClass={id} resClassroom={resClassroom} />
     if (currentTab === 3) return <GradePage />
   }
 
