@@ -21,7 +21,7 @@ export function getAccessTokenFromCode(code) {
   }
   return axios(config)
     .then(function (response) {
-      console.log("qwdqwdwq",)
+      console.log("get token")
       return response.data.access_token
     })
     .catch(function (error) {
