@@ -61,7 +61,7 @@ const MemberPage = ({ idClass, resClassroom }) => {
     getMembers()
   }, [])
 
-  const renderItem = (item, id) => {
+  const renderItem = (item, id, mode) => {
     return (
       <div key={id} className="d-flex border-bottom p-3 align-items-center">
         <div className="fs-3 me-3">#{id + 1}</div>
@@ -71,7 +71,10 @@ const MemberPage = ({ idClass, resClassroom }) => {
           className="rounded-circle border bg-white"
           style={{ width: "3rem", height: "3rem" }}
         />
-        <div className="h6 ps-3 small m-0">{item?.name}</div>
+        <div className="d-flex justify-content-between align-items-center w-100">
+          <div className="h6 ps-3 small m-0">{item?.name}</div>
+          <div className="fs-6">{mode === 1 && item?.studentId}</div>
+        </div>
       </div>
     )
   }
@@ -201,7 +204,7 @@ const MemberPage = ({ idClass, resClassroom }) => {
             />
           </div>
         </div>
-        {teachers?.map((teacher, id) => renderItem(teacher, id))}
+        {teachers?.map((teacher, id) => renderItem(teacher, id, 0))}
       </div>
 
       <div>
@@ -212,7 +215,7 @@ const MemberPage = ({ idClass, resClassroom }) => {
             <i className="ms-3 fs-3 cursor-pointer bi bi-person-plus-fill" />
           </div>
         </div>
-        {students?.map((student, id) => renderItem(student, id))}
+        {students?.map((student, id) => renderItem(student, id, 1))}
       </div>
     </div>
   )
