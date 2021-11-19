@@ -1,5 +1,5 @@
 import emailjs from "emailjs-com"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import {
   Button,
   Form,
@@ -10,9 +10,6 @@ import {
   ToastContainer,
 } from "react-bootstrap"
 import { useForm } from "react-hook-form"
-import Cookies from "universal-cookie"
-import { post } from "../../api"
-import CustomSpinner from "../../components/CustomSpinner"
 import {
   emailPattern,
   MAIL_API_KEY,
@@ -21,11 +18,7 @@ import {
 } from "../../config/constants"
 import { simpleEncode } from "../../config/helper"
 
-const MemberPage = ({ idClass, resClassroom }) => {
-  const [students, setStudents] = useState()
-  const [teachers, setTeachers] = useState()
-  const [isLoading, setIsLoading] = useState(true)
-
+const MemberPage = ({ students, teachers, resClassroom }) => {
   const [isShowEmailInput, setIsShowEmailInput] = useState(false)
   const [isSending, setIsSending] = useState(false)
   const [isToast, setIsToast] = useState(false)
@@ -38,35 +31,6 @@ const MemberPage = ({ idClass, resClassroom }) => {
     getValues,
     formState: { errors },
   } = useForm()
-
-  const cookies = new Cookies()
-
-  const getMembers = async () => {
-    try {
-      !isLoading && setIsLoading(true)
-      const body = { classroomId: idClass }
-
-      const res = await post(
-        "/students-teachers",
-        cookies.get("token"),
-        {},
-        body
-      )
-
-      setStudents(res?.students)
-      setTeachers(res?.teachers)
-
-      setIsLoading(false)
-    } catch (error) {
-      setIsLoading(false)
-
-      console.log("getMembers - error", error)
-    }
-  }
-
-  useEffect(() => {
-    getMembers()
-  }, [])
 
   const renderItem = (item, id, mode) => {
     return (
@@ -195,7 +159,6 @@ const MemberPage = ({ idClass, resClassroom }) => {
     )
   }
 
-  if (isLoading) return <CustomSpinner />
   return (
     <div className="w-100">
       {renderToast()}
