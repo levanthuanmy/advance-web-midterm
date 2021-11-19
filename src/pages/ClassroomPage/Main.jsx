@@ -11,14 +11,14 @@ import {
   ToastContainer,
 } from "react-bootstrap"
 import { useForm } from "react-hook-form"
+import Cookies from "universal-cookie"
+import { patch } from "../../api"
 import {
   emailPattern,
   MAIL_API_KEY,
   MAIL_SERVICE_ID,
   MAIL_TEMPLATE_ID,
 } from "../../config/constants"
-import { patch } from "../../api"
-import Cookies from "universal-cookie"
 
 const Main = ({ resClassroom, isHost }) => {
   const [isToast, setIsToast] = useState(false)
@@ -39,7 +39,9 @@ const Main = ({ resClassroom, isHost }) => {
   const handleGenInviteLink = () => {
     const inviteLink =
       window?.location?.href + `/join?code=${resClassroom?.code}`
+
     navigator.clipboard.writeText(inviteLink)
+
     setToastMsg(
       "Đã lưu đường dẫn tham gia lớp học vào bộ nhớ đệm. Ctrl + C để dán."
     )
@@ -69,6 +71,8 @@ const Main = ({ resClassroom, isHost }) => {
       setToastMsg("Gửi lời mời thành công")
       setIsToast(true)
     } catch (error) {
+      setIsSending(false)
+
       console.log("sendEmail - error", error)
     }
   }
@@ -76,23 +80,25 @@ const Main = ({ resClassroom, isHost }) => {
   const cookies = new Cookies()
 
   const patchClassroom = async (body) => {
-    setIsSending(true)
-    const headers = {
-      "Content-Type": "application/json; charset=UTF-8",
-      Authorization: `Bearer ${cookies.get("token")}`,
+    try {
+      setIsSending(true)
+
+      const res = await patch(
+        `/classrooms/edit/${resClassroom.code}`,
+        cookies.get("token"),
+        {},
+        body
+      )
+      console.log("patchClassroom - res", res)
+      setIsSending(false)
+      setIsDisableInput(true)
+
+      window?.location?.reload()
+    } catch (error) {
+      setIsSending(false)
+
+      console.log("patchClassroom - error", error)
     }
-
-    const res = await patch(
-      `/classrooms/edit/${resClassroom.code}`,
-      {},
-      body,
-      headers
-    )
-    console.log("patchClassroom - res", res)
-    setIsSending(false)
-    setIsDisableInput(true)
-
-    window?.location?.reload()
   }
 
   const onSubmitEmail = () => {
@@ -144,19 +150,6 @@ const Main = ({ resClassroom, isHost }) => {
   }
 
   const renderBanner = () => {
-    // const CustomToggle = React.forwardRef(({ onClick }, ref) => (
-    //   <div
-    //     className=""
-    //     ref={ref}
-    //     onClick={(e) => {
-    //       e.preventDefault()
-    //       onClick(e)
-    //     }}
-    //   >
-    //     <i className="bi bi-gear-fill fs-3 text-white" />
-    //   </div>
-    // ))
-
     return (
       <div
         className="cus-classroom-page-banner w-100 d-flex py-3 px-4 justify-content-between"
@@ -174,23 +167,6 @@ const Main = ({ resClassroom, isHost }) => {
             onClick={() => setIsShowDetailInfoModal(true)}
           >
             <i className="bi bi-gear-fill fs-3 text-white" />
-
-            {/* <Dropdown>
-            <Dropdown.Toggle
-              as={CustomToggle}
-              id="dropdown-custom-components"
-            ></Dropdown.Toggle>
-
-            <Dropdown.Menu className="cus-rounded-dot75rem">
-              <Dropdown.Item eventKey="1" className="text-secondary">
-                <i className="bi bi-info-circle-fill me-2" /> Hiện chi tiết lớp
-                học
-              </Dropdown.Item>
-              <Dropdown.Item eventKey="2" className="text-secondary">
-                <i className="bi bi-pencil-square me-2" /> Chỉnh sửa chi tiết
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown> */}
           </div>
         )}
       </div>

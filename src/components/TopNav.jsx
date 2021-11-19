@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react"
 import { Image } from "react-bootstrap"
-import { set } from "react-hook-form"
 import { useLocation, useNavigate } from "react-router-dom"
 import Cookies from "universal-cookie"
 
@@ -32,11 +31,12 @@ const TopNav = ({
   }
 
   const handleLogoutClicked = () => {
-    navigate("/")
     cookies.remove("token")
     window?.sessionStorage?.removeItem("access_token")
-    window?.location?.reload()
     window?.localStorage?.clear()
+
+    navigate("/")
+    window?.location?.reload()
   }
 
   useEffect(() => {
@@ -50,7 +50,11 @@ const TopNav = ({
     } else {
       setUserInfo({ name: "", email: "" })
     }
-  }, [location.pathname, setCurrentTab])
+  }, [
+    location.pathname,
+    setCurrentTab,
+    window?.localStorage?.getItem("user-info"),
+  ])
 
   const renderDropDown = () => {
     return (

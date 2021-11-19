@@ -8,8 +8,12 @@ if (!baseURL) throw new Error('API URL not defined')
 
 const client = axios.create({ baseURL, headers })
 
-export const get = async (path, params, headers, responseType = 'json') => {
+export const get = async (path, token = '', params, headers, responseType = 'json') => {
   try {
+    if (token?.length) {
+      headers = { 'Content-Type': 'application/json; charset=UTF-8', Authorization: `Bearer ${token}` }
+    }
+
     const res = await client.get(path, { params, headers, responseType })
     return res.data
   } catch (error) {
@@ -19,6 +23,7 @@ export const get = async (path, params, headers, responseType = 'json') => {
       console.log(error.response.data)
       console.log(error.response.status)
       console.log(error.response.headers)
+
       throw error.response.data.error
     } else if (error.request) {
       // The request was made but no response was received
@@ -28,15 +33,21 @@ export const get = async (path, params, headers, responseType = 'json') => {
     } else {
       // Something happened in setting up the request that triggered an Error
       console.log('Error', error.message)
+
+      throw error.message
     }
     console.log(error.config)
-    throw error
 
+    throw error
   }
 }
 
-export const post = async (path, params, data, headers) => {
+export const post = async (path, token = '', params, data, headers) => {
   try {
+    if (token?.length) {
+      headers = { 'Content-Type': 'application/json; charset=UTF-8', Authorization: `Bearer ${token}` }
+    }
+
     const res = await client.post(path, data, { params, headers })
     return res.data
   } catch (error) {
@@ -56,14 +67,19 @@ export const post = async (path, params, data, headers) => {
     } else {
       // Something happened in setting up the request that triggered an Error
       console.log('Error', error.message)
+      throw error.message
     }
     console.log(error.config)
     throw error
   }
 }
 
-export const patch = async (path, params, data, headers) => {
+export const patch = async (path, token = '', params, data, headers) => {
   try {
+    if (token?.length) {
+      headers = { 'Content-Type': 'application/json; charset=UTF-8', Authorization: `Bearer ${token}` }
+    }
+
     const res = await client.patch(path, data, { params, headers })
     return res.data
   } catch (error) {
@@ -73,6 +89,7 @@ export const patch = async (path, params, data, headers) => {
       console.log(error.response.data)
       console.log(error.response.status)
       console.log(error.response.headers)
+
       throw error.response.data.error
     } else if (error.request) {
       // The request was made but no response was received
@@ -82,9 +99,12 @@ export const patch = async (path, params, data, headers) => {
     } else {
       // Something happened in setting up the request that triggered an Error
       console.log('Error', error.message)
+
+      throw error.message
+
     }
     console.log(error.config)
-    throw error
 
+    throw error
   }
 }

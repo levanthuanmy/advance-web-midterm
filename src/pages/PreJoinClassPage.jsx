@@ -17,35 +17,35 @@ const PreJoinClassPage = () => {
 
   const joinClassroom = async () => {
     try {
-      const headers = {
-        "Content-Type": "application/json; charset=UTF-8",
-        Authorization: `Bearer ${cookies.get("token")}`,
-      }
-
       const classCode = query.get("code")
+      const invitedEmail = query.get("email")
 
-      if (query.get("email")) {
-        const email = simpleDecode(query.get("email"))
+      if (invitedEmail) {
+        const email = simpleDecode(invitedEmail)
         console.log("joinClassroom - email", email)
 
         const body = { email, classCode }
-        await post(`/classrooms/invite-teacher`, {}, body, headers)
+        await post(`/classrooms/invite-teacher`, cookies.get("token"), {}, body)
       } else {
-        await get(`/classrooms/join/${classCode}`, {}, headers)
+        await get(`/classrooms/join/${classCode}`, cookies.get("token"), {})
       }
 
       setIsShow(false)
       navigate(`/c/${id}`)
     } catch (error) {
       console.log("joinClassroom - error", error)
+
       alert(error)
       cookies.remove("token")
+
       window?.location?.reload()
     }
   }
 
   useEffect(() => {
-    if (cookies.get("token")?.length && cookies.get("token") !== "undefined") {
+    const token = cookies.get("token")
+
+    if (token?.length && token !== "undefined") {
       joinClassroom()
     }
   }, [cookies.get("token")])

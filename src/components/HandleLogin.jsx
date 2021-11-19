@@ -12,6 +12,8 @@ import CustomSpinner from "../components/CustomSpinner"
 
 const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   const [loginMode, setLoginMode] = useState(0)
+  const [googleCode, setGoogleCode] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   const {
     register,
@@ -21,17 +23,13 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   } = useForm()
 
   const cookies = new Cookies()
-
   const navigate = useNavigate()
-
-  const [googleCode, setGoogleCode] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
 
   const userLogin = async (body) => {
     try {
       setIsLoading(true)
 
-      const res = await post("/users/login", {}, body)
+      const res = await post("/users/login", "", {}, body)
 
       console.log("Login success")
 
@@ -50,13 +48,16 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   }
 
   const userLoginWithGoogle = async (body) => {
-    const res = await post("/users/loginWithGoogle", {}, body)
-    // if (res && res.token && res.user) {
+    const res = await post("/users/loginWithGoogle", "", {}, body)
+
     console.log("Login success")
+
     cookies.set("token", res?.token)
-    setIsShowLogin(false)
     storeUserInfo(res?.user)
+
+    setIsShowLogin(false)
     navigate("/")
+
     window?.location?.reload()
   }
 
@@ -64,7 +65,7 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
     try {
       setIsLoading(true)
 
-      const res = await post("/users", {}, JSON.stringify(body))
+      const res = await post("/users", "", {}, body)
       console.log("userSignUp - res", res)
 
       storeUserInfo(res?.user)
@@ -113,18 +114,22 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
   }, [])
 
   const loginWithGoogle = async (code) => {
-    const token = await getAccessTokenFromCode(code)
-    console.log("loginWithGoogle token", token)
-    const userInfo = await getGoogleUserInfo(token)
-    console.log("loginWithGoogle userInfo", userInfo)
+    try {
+      const token = await getAccessTokenFromCode(code)
+      console.log("loginWithGoogle token", token)
+      const userInfo = await getGoogleUserInfo(token)
+      console.log("loginWithGoogle userInfo", userInfo)
 
-    const body = {
-      name: userInfo.name,
-      email: userInfo.email,
-      id: userInfo.id,
-      avatar: userInfo.picture,
+      const body = {
+        name: userInfo.name,
+        email: userInfo.email,
+        id: userInfo.id,
+        avatar: userInfo.picture,
+      }
+      userLoginWithGoogle(body)
+    } catch (error) {
+      console.log("loginWithGoogle - error", error)
     }
-    userLoginWithGoogle(body)
   }
 
   const renderSignInForm = () => {

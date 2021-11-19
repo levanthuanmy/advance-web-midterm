@@ -19,19 +19,16 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
 
   const getClassroom = async () => {
     try {
-      const headers = {
-        "Content-Type": "application/json; charset=UTF-8",
-        Authorization: `Bearer ${cookies.get("token")}`,
-      }
-
       !isLoading && setIsLoading(true)
-      const res = await get(`/classrooms/${id}`, {}, headers)
+
+      const res = await get(`/classrooms/${id}`, cookies.get("token"), {})
 
       setResClassroom(res)
       getThemeColor(res.themeColor)
       setIsLoading(false)
     } catch (error) {
-      console.log("getClassroom ⟩ error", error)
+      setIsLoading(false)
+      console.log("getClassroom - error", error)
     }
   }
 
@@ -46,10 +43,11 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
 
   useEffect(() => {
     window.scrollTo(0, 0)
-    if (cookies.get("token")?.length) {
+
+    const token = cookies.get("token")
+    if (token?.length && token !== "undefined") {
       getClassroom()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, cookies.get("token")])
 
   const renderMainContent = () => {

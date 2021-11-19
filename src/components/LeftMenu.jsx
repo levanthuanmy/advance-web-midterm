@@ -71,11 +71,11 @@ const LeftMenu = ({ showMenu, resClassrooms }) => {
             className={`p-3 w-100 text-secondary text-nowrap text-truncate h6 cus-menu-item ${
               currentClass === id && "cus-menu-item--active"
             }`}
-            onClick={() => handleClassClicked(classroom._id, id)}
+            onClick={() => handleClassClicked(classroom?._id, id)}
           >
             <i
               className={`bi bi-circle-fill h4 me-3`}
-              style={{ color: classroom.themeColor }}
+              style={{ color: classroom?.themeColor }}
             />
             {classroom.name}
           </div>

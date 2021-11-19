@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Route, Routes } from "react-router-dom"
 import Cookies from 'universal-cookie'
 import { get } from "./api"
@@ -20,9 +20,6 @@ const App = () => {
   const [isShowLogin, setIsShowLogin] = useState(false)
 
   const [token] = useState(new Cookies().get('token'))
-  // const cookies = new Cookies()
-
-  // return cookies.get('token')}, [cookies])
 
   const ref = useRef(null)
 
@@ -32,14 +29,13 @@ const App = () => {
 
   const getClassrooms = async () => {
     try {
-      const headers = { 'Content-Type': 'application/json; charset=UTF-8', 'Authorization': `Bearer ${token}` }
-
-      const res = await get(`/classrooms`, {}, headers)
+      const res = await get(`/classrooms`, token, {})
 
       setResClassrooms(res)
       res && setIsLoading(false)
     } catch (error) {
       setIsLoading(false)
+      console.log('getClassrooms - error', error)
     }
   }
 

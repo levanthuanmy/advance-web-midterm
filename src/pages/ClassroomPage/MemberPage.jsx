@@ -1,25 +1,25 @@
+import emailjs from "emailjs-com"
 import React, { useEffect, useState } from "react"
 import {
-  Image,
-  Modal,
   Button,
   Form,
+  Image,
+  Modal,
   Spinner,
-  ToastContainer,
   Toast,
+  ToastContainer,
 } from "react-bootstrap"
+import { useForm } from "react-hook-form"
 import Cookies from "universal-cookie"
 import { post } from "../../api"
 import CustomSpinner from "../../components/CustomSpinner"
-import { useForm } from "react-hook-form"
-import emailjs from "emailjs-com"
 import {
   emailPattern,
   MAIL_API_KEY,
   MAIL_SERVICE_ID,
   MAIL_TEMPLATE_ID,
 } from "../../config/constants"
-import { simpleDecode, simpleEncode } from "../../config/helper"
+import { simpleEncode } from "../../config/helper"
 
 const MemberPage = ({ idClass, resClassroom }) => {
   const [students, setStudents] = useState()
@@ -42,19 +42,26 @@ const MemberPage = ({ idClass, resClassroom }) => {
   const cookies = new Cookies()
 
   const getMembers = async () => {
-    !isLoading && setIsLoading(true)
-    const headers = {
-      "Content-Type": "application/json; charset=UTF-8",
-      Authorization: `Bearer ${cookies.get("token")}`,
+    try {
+      !isLoading && setIsLoading(true)
+      const body = { classroomId: idClass }
+
+      const res = await post(
+        "/students-teachers",
+        cookies.get("token"),
+        {},
+        body
+      )
+
+      setStudents(res?.students)
+      setTeachers(res?.teachers)
+
+      setIsLoading(false)
+    } catch (error) {
+      setIsLoading(false)
+
+      console.log("getMembers - error", error)
     }
-    const body = { classroomId: idClass }
-
-    const res = await post("/students-teachers", {}, body, headers)
-
-    setStudents(res?.students)
-    setTeachers(res?.teachers)
-
-    setIsLoading(false)
   }
 
   useEffect(() => {

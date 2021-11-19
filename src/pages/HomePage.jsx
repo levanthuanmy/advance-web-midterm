@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Form, Modal, Button } from "react-bootstrap"
+import { Button, Form, Modal } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 import Cookies from "universal-cookie"
 import { post } from "../api"
@@ -23,19 +23,21 @@ const HomePage = ({
 
   const createClassroom = async (body) => {
     try {
-      const headers = {
-        "Content-Type": "application/json; charset=UTF-8",
-        Authorization: `Bearer ${cookies.get("token")}`,
-      }
-
       setIsLoading(true)
 
-      const res = await post(`/create-classroom`, {}, body, headers)
+      const res = await post(
+        `/create-classroom`,
+        cookies.get("token"),
+        {},
+        body
+      )
 
       setResClassrooms([...resClassrooms, res])
       setIsLoading(false)
     } catch (error) {
-      console.log("createClassroom -> error", error)
+      setIsLoading(false)
+
+      console.log("createClassroom - error", error)
     }
   }
 

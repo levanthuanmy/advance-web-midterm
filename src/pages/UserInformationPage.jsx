@@ -37,12 +37,7 @@ const UserInformationPage = () => {
     try {
       !isLoading && setIsLoading(true)
 
-      const headers = {
-        "Content-Type": "application/json; charset=UTF-8",
-        Authorization: `Bearer ${cookies.get("token")}`,
-      }
-
-      const res = await get(`/users/me`, {}, headers)
+      const res = await get(`/users/me`, cookies.get("token"), {})
       console.log("getUserInfo - res", res)
 
       setResUserInfo(res)
@@ -60,12 +55,7 @@ const UserInformationPage = () => {
     try {
       !isLoading && setIsLoading(true)
 
-      const headers = {
-        "Content-Type": "application/json; charset=UTF-8",
-        Authorization: `Bearer ${cookies.get("token")}`,
-      }
-
-      const res = await patch(`/users/me`, {}, body, headers)
+      const res = await patch(`/users/me`, cookies.get("token"), {}, body)
       console.log("editUserInfo - res", res)
 
       setResUserInfo(res)
