@@ -45,6 +45,7 @@
     ]
   },
   "devDependencies": {
+    "immutability-helper": "^3.1.1",
     "query-string": "^7.0.1",
     "react-dnd": "^14.0.4",
     "react-dnd-html5-backend": "^14.0.2",

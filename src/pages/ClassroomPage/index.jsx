@@ -13,7 +13,8 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
 
   const [resClassroom, setResClassroom] = useState()
   const [isLoading, setIsLoading] = useState(true)
-  const [isHost, setIsHost] = useState()
+  const [isHost, setIsHost] = useState(false)
+  const [isTeacher, setIsTeacher] = useState(false)
   const [students, setStudents] = useState()
   const [teachers, setTeachers] = useState()
   const [token] = useState(new Cookies().get("token"))
@@ -52,17 +53,24 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
   }
 
   useEffect(() => {
-    if (resClassroom?.teachers) {
-      const checkHost =
-        JSON.parse(window?.localStorage?.getItem("user-info") || {})?._id ===
-        resClassroom?.teachers[0]
-      setIsHost(checkHost)
+    if (teachers) {
+      const userId = JSON.parse(
+        window?.localStorage?.getItem("user-info") || {}
+      )?._id
+
+      const checkHost = userId === teachers[0]?.id
+
+      if (checkHost) {
+        setIsHost(checkHost)
+        setIsTeacher(checkHost)
+      } else {
+        const checkTeacher =
+          teachers.findIndex((teacher) => teacher.id === userId) >= 0
+
+        setIsTeacher(checkTeacher)
+      }
     }
-  }, [
-    resClassroom,
-    window?.localStorage?.getItem("user-info"),
-    resClassroom?.teachers,
-  ])
+  }, [teachers])
 
   useEffect(() => {
     window.scrollTo(0, 0)
