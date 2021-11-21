@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Route, Routes } from "react-router-dom"
 import Cookies from 'universal-cookie'
 import { get } from "./api"
@@ -14,18 +14,11 @@ const App = () => {
   const [resClassrooms, setResClassrooms] = useState()
   const [currentTab, setCurrentTab] = useState(0)
   const [showMenu, setShowMenu] = useState(false)
-  const [isFixedNav, setIsFixedNav] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [themeColor, setThemeColor] = useState()
   const [isShowLogin, setIsShowLogin] = useState(false)
 
   const [token] = useState(new Cookies().get('token'))
-
-  const ref = useRef(null)
-
-  const handleWindowScroll = () => {
-    setIsFixedNav(+window.scrollY >= 80)
-  }
 
   const getClassrooms = async () => {
     try {
@@ -48,15 +41,6 @@ const App = () => {
     }
   }, [token])
 
-  useEffect(() => {
-    window.addEventListener("scroll", () => handleWindowScroll())
-    return () =>
-      window.removeEventListener("scroll", () =>
-        console.log("remove scroll event")
-      )
-  }, [])
-
-
   return (
     <>
 
@@ -65,17 +49,16 @@ const App = () => {
       <TopNav
         showMenu={showMenu}
         setShowMenu={setShowMenu}
-        isFixed={isFixedNav}
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
         themeColor={themeColor}
       />
 
-      <div ref={ref} className="d-flex mt-4">
+      <div className="d-flex mt-4">
 
         <LeftMenu showMenu={showMenu} resClassrooms={resClassrooms} />
 
-        <div id="mainContent" className="w-100" style={{ paddingLeft: '5rem' }}>
+        <div id="mainContent" className="w-100" style={{ paddingLeft: '5rem', paddingBottom: '10rem', paddingTop: '5rem' }}>
           <Routes>
             <Route path="/" element={
               <HomePage

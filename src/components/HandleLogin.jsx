@@ -266,7 +266,7 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
             <Button
               disabled={isLoading}
               href={googleLoginUrl}
-              className="mt-4 rounded-circle cus-login-btn d-inline-flex justify-content-center align-items-center"
+              className="mt-4 rounded-circle cus-login-btn d-flex justify-content-center align-items-center"
             >
               <i className="bi bi-google fs-3" />
             </Button>
@@ -275,7 +275,7 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
               disabled={isLoading}
               type="submit"
               onClick={() => handleSubmit(onSubmit)}
-              className="mt-4 rounded-circle cus-login-btn d-inline-flex justify-content-center align-items-center"
+              className="mt-4 rounded-circle cus-login-btn d-flex justify-content-center align-items-center"
             >
               <i className="bi bi-arrow-right-short fs-1" />
             </Button>

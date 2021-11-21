@@ -215,3 +215,17 @@ code {
 .cus-dropdown-opt:hover {
   background-color: rgba(156, 156, 156, 0.2);
 }
+
+.cus-assignment-item {
+  cursor: move;
+  height: 5.5rem;
+  transition: all ease-in-out 0.2s;
+  border: solid 1px white !important;
+  border-bottom: solid 1px rgba(156, 156, 156, 0.2) !important;
+}
+
+.cus-assignment-item:hover {
+  border: 1px solid rgba(156, 156, 156, 0.2) !important;
+  box-shadow: 0 0 5px 3px rgba(180, 180, 180, 0.2);
+  border-radius: 1rem;
+}

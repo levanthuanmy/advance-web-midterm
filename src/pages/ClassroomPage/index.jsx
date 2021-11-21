@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { createContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import Cookies from "universal-cookie"
 import { get, post } from "../../api"
@@ -7,6 +7,8 @@ import ExercisePage from "./ExercisePage"
 import GradePage from "./GradePage"
 import Main from "./Main"
 import MemberPage from "./MemberPage"
+
+export const ThemeColorContext = createContext()
 
 const ClassroomPage = ({ getThemeColor, currentTab }) => {
   const { id } = useParams()
@@ -84,7 +86,13 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
   const renderMainContent = () => {
     if (currentTab === 0)
       return <Main resClassroom={resClassroom} isHost={isHost} />
-    if (currentTab === 1) return <ExercisePage />
+    if (currentTab === 1)
+      return (
+        <ExercisePage
+          classroomId={id}
+          assignments={resClassroom?.assignments}
+        />
+      )
     if (currentTab === 2)
       return (
         <MemberPage
@@ -100,7 +108,9 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
   return (
     <div className="px-4 w-100 d-flex justify-content-center">
       <div className="w-100" style={{ maxWidth: "60rem" }}>
-        {isLoading ? <CustomSpinner /> : renderMainContent()}
+        <ThemeColorContext.Provider value={resClassroom?.themeColor}>
+          {isLoading ? <CustomSpinner /> : renderMainContent()}
+        </ThemeColorContext.Provider>
       </div>
     </div>
   )

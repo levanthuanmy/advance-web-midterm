@@ -1,5 +1,5 @@
 import emailjs from "emailjs-com"
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
 import {
   Button,
   Form,
@@ -10,6 +10,7 @@ import {
   ToastContainer,
 } from "react-bootstrap"
 import { useForm } from "react-hook-form"
+import { ThemeColorContext } from "."
 import {
   emailPattern,
   MAIL_API_KEY,
@@ -23,6 +24,8 @@ const MemberPage = ({ students, teachers, resClassroom }) => {
   const [isSending, setIsSending] = useState(false)
   const [isToast, setIsToast] = useState(false)
   const [toastMsg, setToastMsg] = useState("")
+
+  const themeColorContext = useContext(ThemeColorContext)
 
   const {
     register,
@@ -43,7 +46,7 @@ const MemberPage = ({ students, teachers, resClassroom }) => {
           style={{ width: "3rem", height: "3rem" }}
         />
         <div className="d-flex justify-content-between align-items-center w-100">
-          <div className="h6 ps-3 small m-0">{item?.name}</div>
+          <div className="h5 ps-3 m-0">{item?.name}</div>
           <div className="fs-6">{mode === 1 && item?.studentId}</div>
         </div>
       </div>
@@ -164,7 +167,10 @@ const MemberPage = ({ students, teachers, resClassroom }) => {
       {renderToast()}
       {renderEmailInputModal()}
       <div className="mb-5">
-        <div className="border-bottom px-3 py-4 d-flex" style={{}}>
+        <div
+          className="border-bottom px-3 py-4 d-flex"
+          style={{ color: themeColorContext }}
+        >
           <div className="h2 mb-0">Giáo viên</div>
           <div className="h6 mb-0 m-auto me-0">
             {teachers?.length} người
@@ -178,7 +184,10 @@ const MemberPage = ({ students, teachers, resClassroom }) => {
       </div>
 
       <div>
-        <div className="border-bottom px-3 py-4 d-flex" style={{}}>
+        <div
+          className="border-bottom px-3 py-4 d-flex"
+          style={{ color: themeColorContext }}
+        >
           <div className="h2 mb-0">Học viên</div>
           <div className="h6 mb-0 m-auto me-0">
             {students?.length} người

@@ -13,7 +13,6 @@ const tabs = [
 const TopNav = ({
   showMenu,
   setShowMenu,
-  isFixed,
   currentTab,
   setCurrentTab,
   themeColor,
@@ -50,11 +49,7 @@ const TopNav = ({
     } else {
       setUserInfo({ name: "", email: "" })
     }
-  }, [
-    location.pathname,
-    setCurrentTab,
-    window?.localStorage?.getItem("user-info"),
-  ])
+  }, [location.pathname, setCurrentTab])
 
   const renderDropDown = () => {
     return (
@@ -94,9 +89,7 @@ const TopNav = ({
 
   return (
     <div
-      className={`w-100 bg-white cus-top-nav d-flex align-items-center justify-content-between border-bottom ${
-        isFixed && "position-fixed top-0 left-0 shadow-sm"
-      }`}
+      className={`w-100 bg-white cus-top-nav d-flex align-items-center justify-content-between border-bottom position-fixed top-0 left-0 shadow-sm`}
     >
       <div id="left" className="d-flex align-items-center">
         <div
@@ -123,7 +116,7 @@ const TopNav = ({
           {tabs.map((tab, id) => (
             <div
               key={id}
-              className="px-3 cus-tab-item d-inline-flex align-items-center h-100"
+              className="px-3 cus-tab-item d-flex align-items-center h-100"
               style={
                 currentTab === tab.id
                   ? {

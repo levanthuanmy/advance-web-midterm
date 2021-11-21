@@ -1,8 +1,19 @@
-import React, { useRef } from "react"
+import React, { useContext, useRef } from "react"
+import { Dropdown } from "react-bootstrap"
 import { useDrag, useDrop } from "react-dnd"
+import { ThemeColorContext } from "../pages/ClassroomPage"
 
-const AssignmentItem = ({ id, assignment, index, moveItem }) => {
+const AssignmentItem = ({
+  id,
+  assignment,
+  index,
+  moveItem,
+  setOnDelete,
+  setOnEdit,
+}) => {
   const ref = useRef(null)
+
+  const themeColorContext = useContext(ThemeColorContext)
 
   const [{ handlerId }, drop] = useDrop({
     accept: "CARD",
@@ -50,6 +61,7 @@ const AssignmentItem = ({ id, assignment, index, moveItem }) => {
       item.index = hoverIndex
     },
   })
+
   const [{ isDragging }, drag] = useDrag({
     type: "CARD",
     item: () => {
@@ -60,18 +72,83 @@ const AssignmentItem = ({ id, assignment, index, moveItem }) => {
     }),
   })
 
-  const opacity = isDragging ? 0 : 1
-
   drag(drop(ref))
+
+  const CustomToggle = React.forwardRef(({ onClick }, ref) => (
+    <div
+      className="rounded-circle cursor-pointer ms-3 d-flex justify-content-center align-items-center cus-toggle-menu-btn"
+      style={{
+        color: themeColorContext,
+      }}
+      ref={ref}
+      onClick={(e) => {
+        e.preventDefault()
+        onClick(e)
+      }}
+    >
+      <i className="fs-4 bi bi-three-dots-vertical" />
+    </div>
+  ))
 
   return (
     <div
       ref={ref}
       data-handler-id={handlerId}
-      className="w-100 rounded border p-4 mb-3 bg-white"
-      style={{ opacity, cursor: "move" }}
+      className="w-100 mb-5 px-4 bg-white d-flex align-items-center cus-assignment-item"
+      style={{
+        opacity: isDragging ? 0 : 1,
+        color: themeColorContext,
+        borderColor: themeColorContext,
+      }}
     >
-      {assignment?.name}
+      <div
+        className="rounded-circle border text-white d-flex justify-content-center align-items-center"
+        style={{
+          height: "3.5rem",
+          width: "3.5rem",
+          backgroundColor: themeColorContext,
+        }}
+      >
+        <i className="bi bi-journals fs-4 m-auto" />
+      </div>
+
+      <div className="h3 mb-0 ms-4">{assignment?.name}</div>
+      <div className="fs-5 mb-0 ms-auto">{assignment?.point} điểm</div>
+
+      <Dropdown>
+        <Dropdown.Toggle
+          as={CustomToggle}
+          id="dropdown-custom-components"
+        ></Dropdown.Toggle>
+
+        <Dropdown.Menu>
+          <Dropdown.Item
+            eventKey="1"
+            className="text-center"
+            onClick={() =>
+              setOnEdit({
+                code: id,
+                isEdit: true,
+              })
+            }
+          >
+            Sửa
+          </Dropdown.Item>
+          <Dropdown.Divider />
+          <Dropdown.Item
+            eventKey="2"
+            className="text-danger text-center"
+            onClick={() =>
+              setOnDelete({
+                code: id,
+                isDelete: true,
+              })
+            }
+          >
+            Xoá
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
     </div>
   )
 }
