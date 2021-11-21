@@ -1,10 +1,11 @@
-import React, { useContext, useState } from "react"
-import { Form, Modal, Button } from "react-bootstrap"
+import React, { useContext, useEffect, useState } from "react"
+import { Form, Modal, Button, Spinner } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 import Cookies from "universal-cookie"
 import { ThemeColorContext } from "."
 import { post } from "../../api"
 import AssignmentList from "../../components/AssignmentList"
+import useDebounce from "../../hooks/useDebounce"
 
 const ExercisePage = ({ classroomId, assignments }) => {
   const themeColorContext = useContext(ThemeColorContext)
@@ -12,7 +13,9 @@ const ExercisePage = ({ classroomId, assignments }) => {
   const [token] = useState(new Cookies().get("token"))
   const [isLoading, setIsLoading] = useState(false)
   const [listAssign, setListAssign] = useState(assignments)
-  console.log("ExercisePage - listAssign", listAssign?.length)
+  const [isUpdateList, setIsUpdateList] = useState(false)
+
+  const debounceUpdateListAssign = useDebounce(listAssign, 1500)
 
   const {
     register,
@@ -39,7 +42,6 @@ const ExercisePage = ({ classroomId, assignments }) => {
 
   const onSubmit = (data) => {
     const body = { classroomId, assignment: data }
-    console.log("onSubmit - body", body)
 
     createAssignment(body)
   }
@@ -69,7 +71,7 @@ const ExercisePage = ({ classroomId, assignments }) => {
               className="cus-rounded-dot75rem py-2 px-3"
               type="text"
               {...register("name", {
-                required: "Bạn cần nhập tên lớp",
+                required: "Bạn cần nhập tên bài tập",
               })}
             />
             {errors.name && (
@@ -98,6 +100,31 @@ const ExercisePage = ({ classroomId, assignments }) => {
     )
   }
 
+  const updateListAssign = async (newListAssign) => {
+    try {
+      const res = await post(
+        `/reorder-assignments`,
+        token,
+        {},
+        { classroomId, assignments: newListAssign }
+      )
+
+      console.log("updateListAssign")
+
+      setIsUpdateList(false)
+    } catch (error) {
+      setIsUpdateList(false)
+      console.log("updateListAssign - error", error)
+    }
+  }
+
+  useEffect(() => {
+    if (debounceUpdateListAssign) {
+      setIsUpdateList(true)
+      updateListAssign(listAssign)
+    }
+  }, [debounceUpdateListAssign])
+
   return (
     <div>
       <div className="d-flex align-items-center justify-content-end">
@@ -120,6 +147,19 @@ const ExercisePage = ({ classroomId, assignments }) => {
         setAssignments={setListAssign}
         classroomId={classroomId}
       />
+      {isUpdateList && (
+        <div className="position-fixed bottom-0 left-0">
+          <div className="rounded-pill px-4 py-3 border shadow-sm mb-4 fw-bold text-secondary">
+            <Spinner
+              variant="secondary"
+              size="sm"
+              animation="border"
+              className="me-3"
+            />
+            Đang cập nhật
+          </div>
+        </div>
+      )}
     </div>
   )
 }

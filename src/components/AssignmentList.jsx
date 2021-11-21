@@ -141,6 +141,7 @@ const AssignmentList = ({ assignments, setAssignments, classroomId }) => {
 
   if (onDelete?.isDelete || (onEdit?.isEdit && !isShowModal))
     return <CustomSpinner />
+
   return (
     <div className="mt-5">
       {renderModal()}
