@@ -45,7 +45,7 @@ const TopNav = ({
 
     const userInfoStorage = window?.localStorage?.getItem("user-info")
     if (userInfoStorage && userInfoStorage !== "undefined") {
-      setUserInfo(JSON.parse(userInfoStorage))
+      setUserInfo(JSON.parse(userInfoStorage || {}))
     } else {
       setUserInfo({ name: "", email: "" })
     }

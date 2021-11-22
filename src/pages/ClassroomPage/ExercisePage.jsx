@@ -7,12 +7,14 @@ import { post } from "../../api"
 import AssignmentList from "../../components/AssignmentList"
 import useDebounce from "../../hooks/useDebounce"
 
-const ExercisePage = ({ classroomId, assignments }) => {
+const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
   const themeColorContext = useContext(ThemeColorContext)
   const [isShowModal, setIsShowModal] = useState(false)
   const [token] = useState(new Cookies().get("token"))
   const [isLoading, setIsLoading] = useState(false)
   const [listAssign, setListAssign] = useState(assignments)
+  const [total, setTotal] = useState(totalPoint)
+  const [sum, setSum] = useState(sumPoint)
   const [isUpdateList, setIsUpdateList] = useState(false)
 
   const debounceUpdateListAssign = useDebounce(listAssign, 1500)
@@ -30,7 +32,9 @@ const ExercisePage = ({ classroomId, assignments }) => {
 
       const res = await post(`/create-assignment`, token, {}, body)
 
-      setListAssign(res.assignments)
+      setListAssign(res.assignments.params)
+      setTotal(res.assignments.total)
+      setSum(res.assignments.sum)
       setIsLoading(false)
       setIsShowModal(false)
     } catch (error) {
@@ -84,12 +88,21 @@ const ExercisePage = ({ classroomId, assignments }) => {
               className="cus-rounded-dot75rem py-2 px-3"
               type="number"
               min="0"
+              max={Number(total) - Number(sum)}
               {...register("point", {
                 required: "Bạn cần nhập điểm",
               })}
             />
+            <small className="text-secondary">
+              Số điểm cần phải nằm trong khoảng từ 0 đến{" "}
+              {Number(total) - Number(sum)}
+            </small>
+
             {errors.point && (
-              <small className="text-danger">{errors.point?.message}</small>
+              <small className="text-danger">
+                <br />
+                {errors.point?.message}
+              </small>
             )}
           </Form.Group>
           <Button type="submit" className="float-end" disabled={isLoading}>
@@ -127,18 +140,24 @@ const ExercisePage = ({ classroomId, assignments }) => {
 
   return (
     <div>
-      <div className="d-flex align-items-center justify-content-end">
-        <div className="fs-4 mb-0">Tạo bài tập mới</div>
-        <div
-          className="rounded-circle border cus-toggle-menu-btn d-flex justify-content-center align-items-center mx-4"
-          onClick={() => setIsShowModal(true)}
-        >
-          <i
-            className="bi bi-plus-lg fs-3"
-            style={{
-              color: themeColorContext,
+      <div className="d-flex align-items-center justify-content-between">
+        <div className="fs-4">Tổng điểm: {total}</div>
+        <div className="fs-4 mb-0 d-flex align-items-center">
+          Tạo bài tập mới
+          <div
+            className="rounded-circle border cus-toggle-menu-btn d-flex justify-content-center align-items-center mx-4"
+            onClick={() => {
+              reset()
+              setIsShowModal(true)
             }}
-          />
+          >
+            <i
+              className="bi bi-plus-lg fs-3"
+              style={{
+                color: themeColorContext,
+              }}
+            />
+          </div>
         </div>
       </div>
       {renderModal()}
@@ -146,10 +165,12 @@ const ExercisePage = ({ classroomId, assignments }) => {
         assignments={listAssign}
         setAssignments={setListAssign}
         classroomId={classroomId}
+        setSumPoint={setSum}
+        setTotalPoint={setTotal}
       />
       {isUpdateList && (
         <div className="position-fixed bottom-0 left-0">
-          <div className="rounded-pill px-4 py-3 border shadow-sm mb-4 fw-bold text-secondary">
+          <div className="rounded-pill px-4 py-3 border shadow-sm mb-4 fw-bold text-secondary bg-white">
             <Spinner
               variant="secondary"
               size="sm"

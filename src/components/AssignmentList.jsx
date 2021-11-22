@@ -7,7 +7,13 @@ import CustomSpinner from "./CustomSpinner"
 import { Form, Modal, Button } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 
-const AssignmentList = ({ assignments, setAssignments, classroomId }) => {
+const AssignmentList = ({
+  assignments,
+  setAssignments,
+  classroomId,
+  setSumPoint,
+  setTotalPoint,
+}) => {
   const [onDelete, setOnDelete] = useState({ code: "", isDelete: false })
   const [onEdit, setOnEdit] = useState({
     code: "",
@@ -46,7 +52,9 @@ const AssignmentList = ({ assignments, setAssignments, classroomId }) => {
         {},
         { classroomId, assignmentCode: onDelete?.code }
       )
-      setAssignments(res?.assignments)
+      setAssignments(res?.assignments?.params)
+      setTotalPoint(res?.assignments?.total)
+      setSumPoint(res?.assignments?.sum)
       setOnDelete({ code: "", isDelete: false })
     } catch (error) {
       setOnDelete({ code: "", isDelete: false })
@@ -58,9 +66,12 @@ const AssignmentList = ({ assignments, setAssignments, classroomId }) => {
     try {
       const res = await post(`/update-assignment`, token, {}, body)
 
-      setAssignments(res?.assignments)
+      setAssignments(res?.assignments?.params)
+      setTotalPoint(res?.assignments?.total)
+      setSumPoint(res?.assignments?.sum)
       setOnEdit({ code: "", isEdit: false })
     } catch (error) {
+      setOnEdit({ code: "", isEdit: false })
       console.log("editAssignment - error", error)
     }
   }

@@ -42,6 +42,7 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
       const body = { classroomId: id }
 
       const res = await post("/students-teachers", token, {}, body)
+      console.log("getMembers - res", res)
 
       setStudents(res?.students)
       setTeachers(res?.teachers)
@@ -77,7 +78,7 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
   useEffect(() => {
     window.scrollTo(0, 0)
 
-    if (token?.length && token !== "undefined") {
+    if (token?.length && token !== "undefined" && id) {
       getClassroom()
       getMembers()
     }
@@ -90,7 +91,9 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
       return (
         <ExercisePage
           classroomId={id}
-          assignments={resClassroom?.assignments}
+          assignments={resClassroom?.assignments?.params}
+          totalPoint={resClassroom?.assignments?.total}
+          sumPoint={resClassroom?.assignments?.sum}
         />
       )
     if (currentTab === 2)
