@@ -1,39 +1,15 @@
-import emailjs from "emailjs-com"
 import React, { useContext, useState } from "react"
-import {
-  Button,
-  Form,
-  Image,
-  Modal,
-  Spinner,
-  Toast,
-  ToastContainer,
-} from "react-bootstrap"
-import { useForm } from "react-hook-form"
+import { Image, Toast, ToastContainer } from "react-bootstrap"
 import { ThemeColorContext } from "."
-import {
-  emailPattern,
-  MAIL_API_KEY,
-  MAIL_SERVICE_ID,
-  MAIL_TEMPLATE_ID,
-} from "../../config/constants"
-import { simpleEncode } from "../../config/helper"
+import SendingEmail from "../../components/SendingEmail"
 
 const MemberPage = ({ students, teachers, resClassroom }) => {
   const [isShowEmailInput, setIsShowEmailInput] = useState(false)
-  const [isSending, setIsSending] = useState(false)
   const [isToast, setIsToast] = useState(false)
   const [toastMsg, setToastMsg] = useState("")
+  const [inviteTeacher, setInviteTeacher] = useState(false)
 
   const themeColorContext = useContext(ThemeColorContext)
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    getValues,
-    formState: { errors },
-  } = useForm()
 
   const renderItem = (item, id, mode) => {
     return (
@@ -52,88 +28,6 @@ const MemberPage = ({ students, teachers, resClassroom }) => {
       </div>
     )
   }
-
-  const sendEmail = async (message, to_email, to_name = " ") => {
-    try {
-      setIsSending(true)
-
-      const res = await emailjs.send(
-        MAIL_SERVICE_ID,
-        MAIL_TEMPLATE_ID,
-        {
-          from_name: "MyClassroom",
-          to_name,
-          message,
-          to_email,
-          reply_to: "none",
-        },
-        MAIL_API_KEY
-      )
-      console.log("sendEmail - res", res)
-
-      setIsSending(false)
-      setIsShowEmailInput(false)
-      setToastMsg("Gửi lời mời thành công")
-      setIsToast(true)
-    } catch (error) {
-      console.log("sendEmail - error", error)
-    }
-  }
-
-  const onSubmitEmail = () => {
-    const inviteLink =
-      window?.location?.href +
-      `/join?code=${resClassroom?.code}&email=${simpleEncode(
-        getValues("toEmail")
-      )}`
-    !isSending && sendEmail(inviteLink, getValues("toEmail"))
-    reset()
-    console.log("onSubmitEmail - inviteLink", inviteLink)
-  }
-
-  const renderEmailInputModal = () => (
-    <Modal
-      show={isShowEmailInput}
-      onHide={() => {
-        setIsShowEmailInput(false)
-        reset()
-      }}
-      size=""
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Gửi lời mời đến email
-        </Modal.Title>
-      </Modal.Header>
-
-      <Form className="" onSubmit={handleSubmit(onSubmitEmail)}>
-        <Form.Group className="p-4">
-          <Form.Control
-            className="cus-rounded-dot75rem py-2 px-3"
-            type="text"
-            placeholder="Nhập email người gửi"
-            {...register("toEmail", {
-              required: "Bạn cần nhập email",
-              pattern: emailPattern,
-            })}
-          />
-          {errors.toEmail && (
-            <small className="text-danger">{errors.toEmail?.message}</small>
-          )}
-        </Form.Group>
-        <Modal.Footer>
-          {isSending && (
-            <Spinner size="sm" variant="secondary" animation="border" />
-          )}
-          <Button variant="primary" type="submit" disabled={isSending}>
-            Gửi
-          </Button>
-        </Modal.Footer>
-      </Form>
-    </Modal>
-  )
 
   const renderToast = () => {
     return (
@@ -165,7 +59,16 @@ const MemberPage = ({ students, teachers, resClassroom }) => {
   return (
     <div className="w-100">
       {renderToast()}
-      {renderEmailInputModal()}
+
+      <SendingEmail
+        classRoomCode={resClassroom?.code}
+        isShowEmailInput={isShowEmailInput}
+        setIsShowEmailInput={setIsShowEmailInput}
+        setIsToast={setIsToast}
+        setToastMsg={setToastMsg}
+        inviteTeacher={inviteTeacher}
+      />
+
       <div className="mb-5">
         <div
           className="border-bottom px-3 py-4 d-flex"
@@ -176,7 +79,10 @@ const MemberPage = ({ students, teachers, resClassroom }) => {
             {teachers?.length} người
             <i
               className="ms-3 fs-3 cursor-pointer bi bi-person-plus-fill"
-              onClick={() => setIsShowEmailInput(true)}
+              onClick={() => {
+                setIsShowEmailInput(true)
+                setInviteTeacher(true)
+              }}
             />
           </div>
         </div>
@@ -191,7 +97,13 @@ const MemberPage = ({ students, teachers, resClassroom }) => {
           <div className="h2 mb-0">Học viên</div>
           <div className="h6 mb-0 m-auto me-0">
             {students?.length} người
-            <i className="ms-3 fs-3 cursor-pointer bi bi-person-plus-fill" />
+            <i
+              className="ms-3 fs-3 cursor-pointer bi bi-person-plus-fill"
+              onClick={() => {
+                setIsShowEmailInput(true)
+                setInviteTeacher(false)
+              }}
+            />
           </div>
         </div>
         {students?.map((student, id) => renderItem(student, id, 1))}
