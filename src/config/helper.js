@@ -21,22 +21,26 @@ export const simpleDecode = (str1 = '') => {
 
 
 export const downloadTemplate = (data, fileName) => {
-  let book = XLSX.utils.book_new()
+  try {
+    let book = XLSX.utils.book_new()
 
-  book.Props = {
-    Title: "Template",
-    Subject: "Template",
-    Author: "MyClassroom",
-    CreatedDate: new Date(),
+    book.Props = {
+      Title: "Template",
+      Subject: "Template",
+      Author: "MyClassroom",
+      CreatedDate: new Date(),
+    }
+
+    book.SheetNames.push(fileName)
+    book.Sheets[fileName] = XLSX.utils.aoa_to_sheet(data)
+
+    const output = XLSX.write(book, { bookType: "xlsx", type: "array" })
+
+    saveAs(
+      new Blob([output], { type: "application/octet-stream" }),
+      `${fileName}.xlsx`
+    )
+  } catch (error) {
+    console.log('downloadTemplate - error', error)
   }
-
-  book.SheetNames.push(fileName)
-  book.Sheets[fileName] = XLSX.utils.aoa_to_sheet(data)
-
-  const output = XLSX.write(book, { bookType: "xlsx", type: "array" })
-
-  saveAs(
-    new Blob([output], { type: "application/octet-stream" }),
-    `${fileName}.xlsx`
-  )
 }
