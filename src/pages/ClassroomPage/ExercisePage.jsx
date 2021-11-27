@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
-import { Form, Modal, Button, Spinner } from "react-bootstrap"
+import { Button, Form, Modal, Spinner } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 import Cookies from "universal-cookie"
 import { ThemeColorContext } from "."
@@ -10,7 +10,7 @@ import useDebounce from "../../hooks/useDebounce"
 const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
   const themeColorContext = useContext(ThemeColorContext)
   const [isShowModal, setIsShowModal] = useState(false)
-  const [isShowEditTotalModal, setisShowEditTotalModal] = useState(false)
+  const [isShowEditTotalModal, setIsShowEditTotalModal] = useState(false)
   const [token] = useState(new Cookies().get("token"))
   const [isLoading, setIsLoading] = useState(false)
   const [listAssign, setListAssign] = useState(assignments)
@@ -31,7 +31,7 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
     register: register2,
     formState: { errors: errors2 },
     handleSubmit: handleSubmit2,
-  } = useForm();
+  } = useForm()
 
   const createAssignment = async (body) => {
     try {
@@ -57,25 +57,24 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
 
       const res = await post(`/set-assignment-total-point`, token, {}, body)
       console.log(res)
-      setTotal(res.assignments.total)      
+      setTotal(res.assignments.total)
       setIsLoading(false)
-      setisShowEditTotalModal(false)
+      setIsShowEditTotalModal(false)
     } catch (error) {
       setIsLoading(false)
-      setisShowEditTotalModal(false)
+      setIsShowEditTotalModal(false)
       console.log("update total - error", error)
     }
   }
-
 
   const onSubmit = (data) => {
     const body = { classroomId, assignment: data }
     createAssignment(body)
   }
 
-  const onSubmitEditTotal = (data) => {    
-    const body = { classroomId, total: data.total }        
-    updateTotal(body)        
+  const onSubmitEditTotal = (data) => {
+    const body = { classroomId, total: data.total }
+    updateTotal(body)
   }
 
   const renderModal = () => {
@@ -146,7 +145,7 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
       <Modal
         show={isShowEditTotalModal}
         onHide={() => {
-          setisShowEditTotalModal(false)
+          setIsShowEditTotalModal(false)
           reset()
         }}
         size=""
@@ -165,14 +164,13 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
             <Form.Control
               className="cus-rounded-dot75rem py-2 px-3"
               type="number"
-              min={Number(sum)}                                              
+              min={Number(sum)}
               {...register2("total", {
                 required: "Bạn cần nhập điểm",
               })}
             />
             <small className="text-secondary">
-              Số điểm cần phải lớn hơn {" "}
-              {Number(sum)}
+              Số điểm cần phải lớn hơn {Number(sum)}
             </small>
 
             {errors2.total && (
@@ -183,7 +181,7 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
             )}
           </Form.Group>
           <Button type="submit" className="float-end" disabled={isLoading}>
-            Cập nhập
+            Cập nhật
           </Button>
         </Form>
       </Modal>
@@ -192,7 +190,7 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
 
   const updateListAssign = async (newListAssign) => {
     try {
-      const res = await post(
+      await post(
         `/reorder-assignments`,
         token,
         {},
@@ -220,11 +218,11 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
       <div className="d-flex align-items-center justify-content-between">
         <div className="fs-4 mb-0 d-flex align-items-center">
           Tổng điểm: {total}
-        <div
+          <div
             className="rounded-circle border cus-toggle-menu-btn d-flex justify-content-center align-items-center mx-4"
             onClick={() => {
               reset()
-              setisShowEditTotalModal(true)
+              setIsShowEditTotalModal(true)
             }}
           >
             <i
@@ -234,7 +232,7 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
               }}
             />
           </div>
-          </div>
+        </div>
         <div className="fs-4 mb-0 d-flex align-items-center">
           Tạo bài tập mới
           <div
@@ -255,6 +253,7 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
       </div>
       {renderModal()}
       {renderEditTotalModal()}
+
       <AssignmentList
         assignments={listAssign}
         setAssignments={setListAssign}
@@ -262,6 +261,7 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
         setSumPoint={setSum}
         setTotalPoint={setTotal}
       />
+
       {isUpdateList && (
         <div className="position-fixed bottom-0 left-0">
           <div className="rounded-pill px-4 py-3 border shadow-sm mb-4 fw-bold text-secondary bg-white">
