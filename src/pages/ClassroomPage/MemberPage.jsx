@@ -1,13 +1,26 @@
 import React, { useContext, useState } from "react"
-import { Image, Toast, ToastContainer } from "react-bootstrap"
+import {
+  Button,
+  FormControl,
+  Image,
+  InputGroup,
+  Spinner,
+  Toast,
+  ToastContainer,
+} from "react-bootstrap"
+import { useForm } from "react-hook-form"
+import * as XLSX from "xlsx"
 import { ThemeColorContext } from "."
 import SendingEmail from "../../components/SendingEmail"
+import { downloadTemplate } from "../../config/helper"
 
 const MemberPage = ({ students, teachers, resClassroom }) => {
   const [isShowEmailInput, setIsShowEmailInput] = useState(false)
   const [isToast, setIsToast] = useState(false)
   const [toastMsg, setToastMsg] = useState("")
   const [inviteTeacher, setInviteTeacher] = useState(false)
+  const [uploadFile, setUploadFile] = useState(false)
+  const { register, setValue } = useForm()
 
   const themeColorContext = useContext(ThemeColorContext)
 
@@ -54,6 +67,34 @@ const MemberPage = ({ students, teachers, resClassroom }) => {
         </Toast>
       </ToastContainer>
     )
+  }
+
+  const handleFile = (e) => {
+    try {
+      setUploadFile(true)
+
+      const files = e.target.files,
+        f = files[0]
+      const reader = new FileReader()
+
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result)
+        const workbook = XLSX.read(data, { type: "array" })
+        const res = XLSX.utils.sheet_to_json(
+          workbook.Sheets[workbook.SheetNames[0]]
+        )
+
+        console.log("handleFile - res", res)
+        reader.DONE && alert("check the log in the console")
+      }
+
+      reader.readAsArrayBuffer(f)
+    } catch (error) {
+      console.log("handleFile - error", error)
+    } finally {
+      setUploadFile(false)
+      setValue("file", null)
+    }
   }
 
   return (
@@ -106,6 +147,49 @@ const MemberPage = ({ students, teachers, resClassroom }) => {
             />
           </div>
         </div>
+
+        <div className="ps-3 pb-4 border-bottom">
+          <Button
+            onClick={() =>
+              downloadTemplate(
+                [
+                  ["Mã học viên", "Tên đầy đủ"],
+                  ["18127156", "Lê Văn Thuận Mỹ"],
+                ],
+                "student_list_template"
+              )
+            }
+            variant="outline-secondary"
+            size="sm"
+            className="my-4"
+          >
+            <i className="bi bi-download me-2" />
+            Tải xuống biểu mẫu danh sách học viên
+          </Button>
+          <InputGroup>
+            <FormControl
+              size="sm"
+              type="file"
+              {...register("file")}
+              accept=".xlsx"
+              onChange={(e) => handleFile(e)}
+            />
+            <Button variant="secondary" className="" disabled size="sm">
+              {uploadFile ? (
+                <Spinner
+                  size="sm"
+                  variant="light"
+                  animation="border"
+                  className="me-2"
+                />
+              ) : (
+                <i className="bi bi-upload me-2" />
+              )}
+              Tải lên danh sách học viên
+            </Button>
+          </InputGroup>
+        </div>
+
         {students?.map((student, id) => renderItem(student, id, 1))}
       </div>
     </div>
