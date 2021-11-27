@@ -10,6 +10,7 @@ import useDebounce from "../../hooks/useDebounce"
 const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
   const themeColorContext = useContext(ThemeColorContext)
   const [isShowModal, setIsShowModal] = useState(false)
+  const [isShowEditTotalModal, setisShowEditTotalModal] = useState(false)
   const [token] = useState(new Cookies().get("token"))
   const [isLoading, setIsLoading] = useState(false)
   const [listAssign, setListAssign] = useState(assignments)
@@ -25,6 +26,12 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
     reset,
     formState: { errors },
   } = useForm()
+
+  const {
+    register: register2,
+    formState: { errors: errors2 },
+    handleSubmit: handleSubmit2,
+  } = useForm();
 
   const createAssignment = async (body) => {
     try {
@@ -44,10 +51,31 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
     }
   }
 
+  const updateTotal = async (body) => {
+    try {
+      setIsLoading(true)
+
+      const res = await post(`/set-assignment-total-point`, token, {}, body)
+      console.log(res)
+      setTotal(res.assignments.total)      
+      setIsLoading(false)
+      setisShowEditTotalModal(false)
+    } catch (error) {
+      setIsLoading(false)
+      setisShowEditTotalModal(false)
+      console.log("update total - error", error)
+    }
+  }
+
+
   const onSubmit = (data) => {
     const body = { classroomId, assignment: data }
-
     createAssignment(body)
+  }
+
+  const onSubmitEditTotal = (data) => {    
+    const body = { classroomId, total: data.total }        
+    updateTotal(body)        
   }
 
   const renderModal = () => {
@@ -113,6 +141,55 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
     )
   }
 
+  const renderEditTotalModal = () => {
+    return (
+      <Modal
+        show={isShowEditTotalModal}
+        onHide={() => {
+          setisShowEditTotalModal(false)
+          reset()
+        }}
+        size=""
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Cập nhập điểm tổng
+          </Modal.Title>
+        </Modal.Header>
+
+        <Form className="px-4 pb-4" onSubmit={handleSubmit2(onSubmitEditTotal)}>
+          <Form.Group className="py-3">
+            <Form.Label>Số điểm</Form.Label>
+            <Form.Control
+              className="cus-rounded-dot75rem py-2 px-3"
+              type="number"
+              min={Number(sum)}                                              
+              {...register2("total", {
+                required: "Bạn cần nhập điểm",
+              })}
+            />
+            <small className="text-secondary">
+              Số điểm cần phải lớn hơn {" "}
+              {Number(sum)}
+            </small>
+
+            {errors2.total && (
+              <small className="text-danger">
+                <br />
+                {errors2.total?.message}
+              </small>
+            )}
+          </Form.Group>
+          <Button type="submit" className="float-end" disabled={isLoading}>
+            Cập nhập
+          </Button>
+        </Form>
+      </Modal>
+    )
+  }
+
   const updateListAssign = async (newListAssign) => {
     try {
       const res = await post(
@@ -141,7 +218,23 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
   return (
     <div>
       <div className="d-flex align-items-center justify-content-between">
-        <div className="fs-4">Tổng điểm: {total}</div>
+        <div className="fs-4 mb-0 d-flex align-items-center">
+          Tổng điểm: {total}
+        <div
+            className="rounded-circle border cus-toggle-menu-btn d-flex justify-content-center align-items-center mx-4"
+            onClick={() => {
+              reset()
+              setisShowEditTotalModal(true)
+            }}
+          >
+            <i
+              className="bi bi-pencil fs-3"
+              style={{
+                color: themeColorContext,
+              }}
+            />
+          </div>
+          </div>
         <div className="fs-4 mb-0 d-flex align-items-center">
           Tạo bài tập mới
           <div
@@ -161,6 +254,7 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
         </div>
       </div>
       {renderModal()}
+      {renderEditTotalModal()}
       <AssignmentList
         assignments={listAssign}
         setAssignments={setListAssign}
