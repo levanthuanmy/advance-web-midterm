@@ -92,6 +92,7 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
       const body = {
         name: data.signUpName,
         email: data.signUpEmail,
+        studentId: data.signUpStudentId,
         password: data.signUpPassword,
       }
       userSignUp(body)
@@ -197,6 +198,18 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
           />
           {errors.signUpName && (
             <small className="text-danger">Bạn cần nhập tên</small>
+          )}
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Control
+            className="cus-rounded-dot75rem py-2 px-3 mt-3"
+            type="text"
+            placeholder="Mã số sinh viên"
+            {...register("signUpStudentId", { required: true })}
+          />
+          {errors.signUpStudentId && (
+            <small className="text-danger">Bạn cần nhập mã số sinh viên</small>
           )}
         </Form.Group>
 
