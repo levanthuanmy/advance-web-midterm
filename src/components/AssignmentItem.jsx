@@ -2,6 +2,7 @@ import React, { useContext, useRef } from "react"
 import { Dropdown } from "react-bootstrap"
 import { useDrag, useDrop } from "react-dnd"
 import { ThemeColorContext } from "../pages/ClassroomPage"
+import { useNavigate, useLocation } from "react-router-dom"
 
 const AssignmentItem = ({
   id,
@@ -12,6 +13,8 @@ const AssignmentItem = ({
   setOnEdit,
 }) => {
   const ref = useRef(null)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const themeColorContext = useContext(ThemeColorContext)
 
@@ -100,6 +103,7 @@ const AssignmentItem = ({
         color: themeColorContext,
         borderColor: themeColorContext,
       }}
+      onClick={() => navigate(`${location.pathname}/a/${assignment._id}`)}
     >
       <div
         className="rounded-circle border text-white d-flex justify-content-center align-items-center"

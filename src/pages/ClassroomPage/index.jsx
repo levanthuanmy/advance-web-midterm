@@ -91,9 +91,6 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
       return (
         <ExercisePage
           classroomId={id}
-          assignments={resClassroom?.assignments?.params}
-          totalPoint={resClassroom?.assignments?.total}
-          sumPoint={resClassroom?.assignments?.sum}
         />
       )
     if (currentTab === 2)

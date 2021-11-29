@@ -3,19 +3,20 @@ import { Button, Form, Modal, Spinner } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 import Cookies from "universal-cookie"
 import { ThemeColorContext } from "."
-import { post } from "../../api"
+import { get, post } from "../../api"
 import AssignmentList from "../../components/AssignmentList"
+import CustomSpinner from "../../components/CustomSpinner"
 import useDebounce from "../../hooks/useDebounce"
 
-const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
+const ExercisePage = ({ classroomId }) => {
   const themeColorContext = useContext(ThemeColorContext)
   const [isShowModal, setIsShowModal] = useState(false)
   const [isShowEditTotalModal, setIsShowEditTotalModal] = useState(false)
   const [token] = useState(new Cookies().get("token"))
   const [isLoading, setIsLoading] = useState(false)
-  const [listAssign, setListAssign] = useState(assignments)
-  const [total, setTotal] = useState(totalPoint)
-  const [sum, setSum] = useState(sumPoint)
+  const [listAssign, setListAssign] = useState()
+  const [total, setTotal] = useState()
+  const [sum, setSum] = useState()
   const [isUpdateList, setIsUpdateList] = useState(false)
 
   const debounceUpdateListAssign = useDebounce(listAssign, 1500)
@@ -39,9 +40,9 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
 
       const res = await post(`/create-assignment`, token, {}, body)
 
-      setListAssign(res.assignments.params)
-      setTotal(res.assignments.total)
-      setSum(res.assignments.sum)
+      setListAssign(res.params)
+      setTotal(res.total)
+      setSum(res.sum)
       setIsLoading(false)
       setIsShowModal(false)
     } catch (error) {
@@ -57,13 +58,31 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
 
       const res = await post(`/set-assignment-total-point`, token, {}, body)
       console.log(res)
-      setTotal(res.assignments.total)
+      setTotal(res.total)
       setIsLoading(false)
       setIsShowEditTotalModal(false)
     } catch (error) {
       setIsLoading(false)
       setIsShowEditTotalModal(false)
       console.log("update total - error", error)
+    }
+  }
+
+  const getAssignments = async () => {
+    try {
+      !isLoading && setIsLoading(true)
+
+      const res = await get(`/assignments/${classroomId}`, token)
+      console.log("getAssignments - res", res)
+
+      setListAssign(res.params)
+      setTotal(res.total)
+      setSum(res.sum)
+
+      setIsLoading(false)
+    } catch (error) {
+      setIsLoading(false)
+      console.log("getAssignments - error", error)
     }
   }
 
@@ -188,6 +207,10 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
     )
   }
 
+  useEffect(() => {
+    classroomId && getAssignments()
+  }, [classroomId])
+
   const updateListAssign = async (newListAssign) => {
     try {
       await post(
@@ -213,69 +236,73 @@ const ExercisePage = ({ classroomId, assignments, totalPoint, sumPoint }) => {
     }
   }, [debounceUpdateListAssign])
 
+  if (!listAssign) return <CustomSpinner />
+
   return (
-    <div>
-      <div className="d-flex align-items-center justify-content-between">
-        <div className="fs-4 mb-0 d-flex align-items-center">
-          Tổng điểm: {total}
-          <div
-            className="rounded-circle border cus-toggle-menu-btn d-flex justify-content-center align-items-center mx-4"
-            onClick={() => {
-              reset()
-              setIsShowEditTotalModal(true)
-            }}
-          >
-            <i
-              className="bi bi-pencil fs-3"
-              style={{
-                color: themeColorContext,
+    listAssign && (
+      <div>
+        <div className="d-flex align-items-center justify-content-between">
+          <div className="fs-4 mb-0 d-flex align-items-center">
+            Tổng điểm: {total}
+            <div
+              className="rounded-circle border cus-toggle-menu-btn d-flex justify-content-center align-items-center mx-4"
+              onClick={() => {
+                reset()
+                setIsShowEditTotalModal(true)
               }}
-            />
+            >
+              <i
+                className="bi bi-pencil fs-3"
+                style={{
+                  color: themeColorContext,
+                }}
+              />
+            </div>
+          </div>
+          <div className="fs-4 mb-0 d-flex align-items-center">
+            Tạo bài tập mới
+            <div
+              className="rounded-circle border cus-toggle-menu-btn d-flex justify-content-center align-items-center mx-4"
+              onClick={() => {
+                reset()
+                setIsShowModal(true)
+              }}
+            >
+              <i
+                className="bi bi-plus-lg fs-3"
+                style={{
+                  color: themeColorContext,
+                }}
+              />
+            </div>
           </div>
         </div>
-        <div className="fs-4 mb-0 d-flex align-items-center">
-          Tạo bài tập mới
-          <div
-            className="rounded-circle border cus-toggle-menu-btn d-flex justify-content-center align-items-center mx-4"
-            onClick={() => {
-              reset()
-              setIsShowModal(true)
-            }}
-          >
-            <i
-              className="bi bi-plus-lg fs-3"
-              style={{
-                color: themeColorContext,
-              }}
-            />
+        {renderModal()}
+        {renderEditTotalModal()}
+
+        <AssignmentList
+          assignments={listAssign}
+          setAssignments={setListAssign}
+          classroomId={classroomId}
+          setSumPoint={setSum}
+          setTotalPoint={setTotal}
+        />
+
+        {isUpdateList && (
+          <div className="position-fixed bottom-0 left-0">
+            <div className="rounded-pill px-4 py-3 border shadow-sm mb-4 fw-bold text-secondary bg-white">
+              <Spinner
+                variant="secondary"
+                size="sm"
+                animation="border"
+                className="me-3"
+              />
+              Đang cập nhật
+            </div>
           </div>
-        </div>
+        )}
       </div>
-      {renderModal()}
-      {renderEditTotalModal()}
-
-      <AssignmentList
-        assignments={listAssign}
-        setAssignments={setListAssign}
-        classroomId={classroomId}
-        setSumPoint={setSum}
-        setTotalPoint={setTotal}
-      />
-
-      {isUpdateList && (
-        <div className="position-fixed bottom-0 left-0">
-          <div className="rounded-pill px-4 py-3 border shadow-sm mb-4 fw-bold text-secondary bg-white">
-            <Spinner
-              variant="secondary"
-              size="sm"
-              animation="border"
-              className="me-3"
-            />
-            Đang cập nhật
-          </div>
-        </div>
-      )}
-    </div>
+    )
   )
 }
 
