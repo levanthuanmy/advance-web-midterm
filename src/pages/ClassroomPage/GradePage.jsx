@@ -35,6 +35,7 @@ const GradePage = ({ classroomId }) => {
 
 
       //template
+      //thêm cột ID - name
       var columns = [
         {
           Header: "ID",
@@ -45,6 +46,8 @@ const GradePage = ({ classroomId }) => {
           accessor: "name",
         },
       ];
+      
+      //đẩy từng cột pa vào
       for (var i = 0; i < assignmentNames.length; i++) {
         columns.push({
           Header: assignmentNames[i],
@@ -52,12 +55,13 @@ const GradePage = ({ classroomId }) => {
         });
       }
 
+      //thêm cột total
       columns.push({
         Header: "Total",
         accessor: "total",
       });
       //template
-      
+
       setColumnsTemplate([...columns]);
       setData(result);
     })();
@@ -67,7 +71,7 @@ const GradePage = ({ classroomId }) => {
     <AssignmentGradeList
       columns={columnsTemplate}
       data={data}
-    ></AssignmentGradeList>
+    />
   );
 };
 
