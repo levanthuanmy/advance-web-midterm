@@ -6,11 +6,12 @@ import Cookies from "universal-cookie"
 import CustomSpinner from "./CustomSpinner"
 import { Form, Modal, Button } from "react-bootstrap"
 import { useForm } from "react-hook-form"
+import AssignmentDetail from "./AssignmentDetail"
 
 const AssignmentList = ({
   assignments,
   setAssignments,
-  classroomId,
+  classroom,
   setSumPoint,
   setTotalPoint,
 }) => {
@@ -21,6 +22,10 @@ const AssignmentList = ({
   })
   const [token] = useState(new Cookies().get("token"))
   const [isShowModal, setIsShowModal] = useState(false)
+  const [onShowDetail, setOnShowDetail] = useState({
+    isShowDetail: false,
+    assignmentIndex: -1,
+  })
 
   const {
     register,
@@ -50,7 +55,7 @@ const AssignmentList = ({
         `/delete-assignment`,
         token,
         {},
-        { classroomId, assignmentCode: onDelete?.code }
+        { classroomId: classroom?._id, assignmentCode: onDelete?.code }
       )
       setAssignments(res?.assignments?.params)
       setTotalPoint(res?.assignments?.total)
@@ -90,7 +95,11 @@ const AssignmentList = ({
   const onSubmit = (data) => {
     setIsShowModal(false)
 
-    const body = { classroomId, assignmentCode: onEdit?.code, assignment: data }
+    const body = {
+      classroomId: classroom?._id,
+      assignmentCode: onEdit?.code,
+      assignment: data,
+    }
 
     editAssignment(body)
   }
@@ -165,8 +174,20 @@ const AssignmentList = ({
           moveItem={moveItem}
           setOnDelete={setOnDelete}
           setOnEdit={setOnEdit}
+          setOnShowDetail={setOnShowDetail}
         />
       ))}
+      <AssignmentDetail
+        isShowDetail={onShowDetail?.isShowDetail}
+        handleClose={() =>
+          setOnShowDetail({
+            isShowDetail: false,
+            assignmentIndex: -1,
+          })
+        }
+        assignment={assignments[onShowDetail?.assignmentIndex || 0]}
+        classroom={classroom}
+      />
     </div>
   )
 }

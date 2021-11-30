@@ -1,104 +1,106 @@
-import React, { createContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import Cookies from "universal-cookie";
-import { get, post } from "../../api";
-import CustomSpinner from "../../components/CustomSpinner";
-import ExercisePage from "./ExercisePage";
-import GradePage from "./GradePage";
-import Main from "./Main";
-import MemberPage from "./MemberPage";
+import React, { createContext, useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
+import Cookies from "universal-cookie"
+import { get, post } from "../../api"
+import CustomSpinner from "../../components/CustomSpinner"
+import ExercisePage from "./ExercisePage"
+import GradePage from "./GradePage"
+import Main from "./Main"
+import MemberPage from "./MemberPage"
 
-export const ThemeColorContext = createContext();
+export const ThemeColorContext = createContext()
 
 const ClassroomPage = ({ getThemeColor, currentTab }) => {
-  const { id } = useParams();
+  const { id } = useParams()
 
-  const [resClassroom, setResClassroom] = useState();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isHost, setIsHost] = useState(false);
-  const [isTeacher, setIsTeacher] = useState(false);
-  const [students, setStudents] = useState();
-  const [teachers, setTeachers] = useState();
-  const [token] = useState(new Cookies().get("token"));
+  const [resClassroom, setResClassroom] = useState()
+  const [isLoading, setIsLoading] = useState(true)
+  const [isHost, setIsHost] = useState(false)
+  const [isTeacher, setIsTeacher] = useState(false)
+  const [students, setStudents] = useState()
+  const [teachers, setTeachers] = useState()
+  const [token] = useState(new Cookies().get("token"))
 
   const getClassroom = async () => {
     try {
-      !isLoading && setIsLoading(true);
+      !isLoading && setIsLoading(true)
 
-      const res = await get(`/classrooms/${id}`, token, {});
+      const res = await get(`/classrooms/${id}`, token, {})
 
-      setResClassroom(res);
-      getThemeColor(res.themeColor);
-      setIsLoading(false);
+      setResClassroom(res)
+      getThemeColor(res.themeColor)
+      setIsLoading(false)
     } catch (error) {
-      setIsLoading(false);
-      console.log("getClassroom - error", error);
+      setIsLoading(false)
+      console.log("getClassroom - error", error)
     }
-  };
+  }
 
   const getMembers = async () => {
     try {
-      !isLoading && setIsLoading(true);
-      const body = { classroomId: id };
+      !isLoading && setIsLoading(true)
+      const body = { classroomId: id }
 
-      const res = await post("/students-teachers", token, {}, body);
-      console.log("getMembers - res", res);
+      const res = await post("/students-teachers", token, {}, body)
+      console.log("getMembers - res", res)
 
-      setStudents(res?.students);
-      setTeachers(res?.teachers);
+      setStudents(res?.students)
+      setTeachers(res?.teachers)
 
-      setIsLoading(false);
+      setIsLoading(false)
     } catch (error) {
-      setIsLoading(false);
+      setIsLoading(false)
 
-      console.log("getMembers - error", error);
+      console.log("getMembers - error", error)
     }
-  };
+  }
 
   useEffect(() => {
     if (teachers) {
       const userId = JSON.parse(
         window?.localStorage?.getItem("user-info") || {}
-      )?._id;
+      )?._id
 
-      const checkHost = userId === teachers[0]?.id;
+      const checkHost = userId === teachers[0]?.id
 
       if (checkHost) {
-        setIsHost(checkHost);
-        setIsTeacher(checkHost);
+        setIsHost(checkHost)
+        setIsTeacher(checkHost)
       } else {
         const checkTeacher =
-          teachers.findIndex((teacher) => teacher.id === userId) >= 0;
+          teachers.findIndex((teacher) => teacher.id === userId) >= 0
 
-        setIsTeacher(checkTeacher);
+        setIsTeacher(checkTeacher)
       }
     }
-  }, [teachers]);
+  }, [teachers])
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo(0, 0)
 
     if (token?.length && token !== "undefined" && id) {
-      getClassroom();
-      getMembers();
+      getClassroom()
+      getMembers()
     }
-  }, [id, token]);
+  }, [id, token])
 
   const renderMainContent = () => {
     if (currentTab === 0)
-      return <Main resClassroom={resClassroom} isHost={isHost} />;
-    if (currentTab === 1) return <ExercisePage classroomId={id} />;
+      return <Main resClassroom={resClassroom} isHost={isHost} />
+    if (currentTab === 1) return <ExercisePage resClassroom={resClassroom} />
     if (currentTab === 2)
       return (
         <MemberPage
           students={students}
           teachers={teachers}
           resClassroom={resClassroom}
+          isHost={isHost}
+          isTeacher={isTeacher}
         />
-      );
-    if (currentTab === 3) return <GradePage classroomId={id} />;
-    return <></>;
-  };
+      )
+    if (currentTab === 3) return <GradePage classroomId={id} />
+    return <></>
+  }
 
   return (
     <div className="px-4 w-100 d-flex justify-content-center">
@@ -108,7 +110,7 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
         </ThemeColorContext.Provider>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ClassroomPage;
+export default ClassroomPage

@@ -8,7 +8,7 @@ import AssignmentList from "../../components/AssignmentList"
 import CustomSpinner from "../../components/CustomSpinner"
 import useDebounce from "../../hooks/useDebounce"
 
-const ExercisePage = ({ classroomId }) => {
+const ExercisePage = ({ resClassroom }) => {
   const themeColorContext = useContext(ThemeColorContext)
   const [isShowModal, setIsShowModal] = useState(false)
   const [isShowEditTotalModal, setIsShowEditTotalModal] = useState(false)
@@ -72,7 +72,7 @@ const ExercisePage = ({ classroomId }) => {
     try {
       !isLoading && setIsLoading(true)
 
-      const res = await get(`/assignments/${classroomId}`, token)
+      const res = await get(`/assignments/${resClassroom?._id}`, token)
       console.log("getAssignments - res", res)
 
       setListAssign(res.params)
@@ -87,12 +87,12 @@ const ExercisePage = ({ classroomId }) => {
   }
 
   const onSubmit = (data) => {
-    const body = { classroomId, assignment: data }
+    const body = { classroomId: resClassroom?._id, assignment: data }
     createAssignment(body)
   }
 
   const onSubmitEditTotal = (data) => {
-    const body = { classroomId, total: data.total }
+    const body = { classroomId: resClassroom?._id, total: data.total }
     updateTotal(body)
   }
 
@@ -208,8 +208,8 @@ const ExercisePage = ({ classroomId }) => {
   }
 
   useEffect(() => {
-    classroomId && getAssignments()
-  }, [classroomId])
+    resClassroom?._id && getAssignments()
+  }, [resClassroom])
 
   const updateListAssign = async (newListAssign) => {
     try {
@@ -217,7 +217,7 @@ const ExercisePage = ({ classroomId }) => {
         `/reorder-assignments`,
         token,
         {},
-        { classroomId, assignments: newListAssign }
+        { classroomId: resClassroom?._id, assignments: newListAssign }
       )
 
       console.log("updateListAssign")
@@ -283,7 +283,7 @@ const ExercisePage = ({ classroomId }) => {
         <AssignmentList
           assignments={listAssign}
           setAssignments={setListAssign}
-          classroomId={classroomId}
+          classroom={resClassroom}
           setSumPoint={setSum}
           setTotalPoint={setTotal}
         />

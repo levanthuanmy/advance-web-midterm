@@ -13,21 +13,32 @@ import * as XLSX from "xlsx"
 import { ThemeColorContext } from "."
 import SendingEmail from "../../components/SendingEmail"
 import { downloadTemplate } from "../../config/helper"
+import { post } from "../../api"
+import Cookies from "universal-cookie"
 
-const MemberPage = ({ students, teachers, resClassroom }) => {
+const MemberPage = ({
+  students,
+  teachers,
+  resClassroom,
+  isHost,
+  isTeacher,
+}) => {
   const [isShowEmailInput, setIsShowEmailInput] = useState(false)
   const [isToast, setIsToast] = useState(false)
   const [toastMsg, setToastMsg] = useState("")
   const [inviteTeacher, setInviteTeacher] = useState(false)
   const [uploadFile, setUploadFile] = useState(false)
   const { register, setValue } = useForm()
+  const [token] = useState(new Cookies().get("token"))
+  const [preStudentList, setPreStudentList] = useState(
+    resClassroom?.unmappedStudents
+  )
 
   const themeColorContext = useContext(ThemeColorContext)
 
-  const renderItem = (item, id, mode) => {
+  const renderItem = (item, id, mode, verify = false) => {
     return (
       <div key={id} className="d-flex border-bottom p-3 align-items-center">
-        <div className="fs-3 me-3">#{id + 1}</div>
         <Image
           src={`/images/avatar.png`}
           fluid
@@ -35,7 +46,12 @@ const MemberPage = ({ students, teachers, resClassroom }) => {
           style={{ width: "3rem", height: "3rem" }}
         />
         <div className="d-flex justify-content-between align-items-center w-100">
-          <div className="h5 ps-3 m-0">{item?.name}</div>
+          <div className="h5 ps-3 m-0">
+            {item?.name}
+            {verify && (
+              <i className="ms-3 bi bi-patch-check-fill text-primary" />
+            )}
+          </div>
           <div className="fs-6">{mode === 1 && item?.studentId}</div>
         </div>
       </div>
@@ -84,7 +100,17 @@ const MemberPage = ({ students, teachers, resClassroom }) => {
           workbook.Sheets[workbook.SheetNames[0]]
         )
 
-        console.log("handleFile - res", res)
+        let formatData = []
+
+        for (let row of res) {
+          formatData.push({ studentId: row["MSSV"], name: row["Tên"] })
+        }
+
+        const body = { classroomId: resClassroom._id, studentList: formatData }
+
+        postPreStudentList(body)
+        console.log("handleFile - body", body)
+
         reader.DONE && alert("check the log in the console")
       }
 
@@ -95,6 +121,29 @@ const MemberPage = ({ students, teachers, resClassroom }) => {
       setUploadFile(false)
       setValue("file", null)
     }
+  }
+
+  const postPreStudentList = async (body) => {
+    try {
+      const res = await post(`/set-student-list`, token, {}, body)
+      setPreStudentList(res.unmappedStudents)
+    } catch (error) {
+      console.log("postPreStudentList - error", error)
+    }
+  }
+
+  const genSampleData = () => {
+    const temp = [["Mã học viên", "Tên"]]
+
+    for (let item of students) {
+      temp.push(Object.values({ studentId: item?.studentId, name: item?.name }))
+    }
+
+    for (let item of preStudentList) {
+      temp.push(Object.values({ studentId: item?.studentId, name: item?.name }))
+    }
+
+    return temp
   }
 
   return (
@@ -137,7 +186,9 @@ const MemberPage = ({ students, teachers, resClassroom }) => {
         >
           <div className="h2 mb-0">Học viên</div>
           <div className="h6 mb-0 m-auto me-0">
-            {students?.length} người
+            {Number(students?.length || 0) +
+              Number(preStudentList?.length || 0)}{" "}
+            người
             <i
               className="ms-3 fs-3 cursor-pointer bi bi-person-plus-fill"
               onClick={() => {
@@ -148,49 +199,48 @@ const MemberPage = ({ students, teachers, resClassroom }) => {
           </div>
         </div>
 
-        <div className="ps-3 pb-4 border-bottom">
-          <Button
-            onClick={() =>
-              downloadTemplate(
-                [
-                  ["Mã học viên", "Tên đầy đủ"],
-                  ["18127156", "Lê Văn Thuận Mỹ"],
-                ],
-                "student_list_template"
-              )
-            }
-            variant="outline-secondary"
-            size="sm"
-            className="my-4"
-          >
-            <i className="bi bi-download me-2" />
-            Tải xuống biểu mẫu danh sách học viên
-          </Button>
-          <InputGroup>
-            <FormControl
+        {isTeacher && (
+          <div className="ps-3 pb-4 border-bottom">
+            <Button
+              onClick={() =>
+                downloadTemplate(genSampleData(), "student_list_template")
+              }
+              variant="outline-secondary"
               size="sm"
-              type="file"
-              {...register("file")}
-              accept=".xlsx"
-              onChange={(e) => handleFile(e)}
-            />
-            <Button variant="secondary" className="" disabled size="sm">
-              {uploadFile ? (
-                <Spinner
-                  size="sm"
-                  variant="light"
-                  animation="border"
-                  className="me-2"
-                />
-              ) : (
-                <i className="bi bi-upload me-2" />
-              )}
-              Tải lên danh sách học viên
+              className="my-4"
+            >
+              <i className="bi bi-download me-2" />
+              Tải xuống biểu mẫu danh sách học viên
             </Button>
-          </InputGroup>
-        </div>
+            {isHost && (
+              <InputGroup>
+                <FormControl
+                  size="sm"
+                  type="file"
+                  {...register("file")}
+                  accept=".xlsx"
+                  onChange={(e) => handleFile(e)}
+                />
+                <Button variant="secondary" className="" disabled size="sm">
+                  {uploadFile ? (
+                    <Spinner
+                      size="sm"
+                      variant="light"
+                      animation="border"
+                      className="me-2"
+                    />
+                  ) : (
+                    <i className="bi bi-upload me-2" />
+                  )}
+                  Tải lên danh sách học viên
+                </Button>
+              </InputGroup>
+            )}
+          </div>
+        )}
 
-        {students?.map((student, id) => renderItem(student, id, 1))}
+        {students?.map((student, id) => renderItem(student, id, 1, true))}
+        {preStudentList?.map((student, id) => renderItem(student, id, 1))}
       </div>
     </div>
   )

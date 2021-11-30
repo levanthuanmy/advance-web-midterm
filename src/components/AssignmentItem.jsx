@@ -11,6 +11,7 @@ const AssignmentItem = ({
   moveItem,
   setOnDelete,
   setOnEdit,
+  setOnShowDetail,
 }) => {
   const ref = useRef(null)
   const navigate = useNavigate()
@@ -103,7 +104,9 @@ const AssignmentItem = ({
         color: themeColorContext,
         borderColor: themeColorContext,
       }}
-      onClick={() => navigate(`${location.pathname}/a/${assignment._id}`)}
+      onClick={() =>
+        setOnShowDetail({ assignmentIndex: index, isShowDetail: true })
+      }
     >
       <div
         className="rounded-circle border text-white d-flex justify-content-center align-items-center"
