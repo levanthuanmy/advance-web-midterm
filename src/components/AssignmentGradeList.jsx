@@ -1,5 +1,7 @@
-import React from "react"
+import React, { useContext } from "react"
+import { Table } from "react-bootstrap"
 import { useTable } from "react-table"
+import { ThemeColorContext } from "../pages/ClassroomPage"
 
 const AssignmentGradeList = ({ columns, data }) => {
   const {
@@ -13,33 +15,40 @@ const AssignmentGradeList = ({ columns, data }) => {
     data,
   })
 
+  const themeColor = useContext(ThemeColorContext)
+
   return (
-    <table
-      className="table table-striped table-bordered table-hover"
-      {...getTableProps()}
-    >
-      <thead>
+    <Table borderless hover className="shadow" {...getTableProps()}>
+      <tbody className="rounded-3">
         {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
+          <tr
+            style={{ backgroundColor: themeColor }}
+            {...headerGroup.getHeaderGroupProps()}
+          >
             {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+              <td className="text-white fs-3 px-3 border-start" {...column.getHeaderProps()}>
+                {column.render("Header")}
+              </td>
             ))}
           </tr>
         ))}
-      </thead>
-      <tbody className="p-2" {...getTableBodyProps()}>
+
         {rows.map((row, i) => {
           prepareRow(row)
           return (
             <tr {...row.getRowProps()}>
               {row.cells.map((cell) => {
-                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                return (
+                  <td className="px-3 fs-5 border-start" {...cell.getCellProps()}>
+                    {cell.render("Cell")}
+                  </td>
+                )
               })}
             </tr>
           )
         })}
       </tbody>
-    </table>
+    </Table>
   )
 }
 

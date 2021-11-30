@@ -31,13 +31,13 @@ const GradePage = ({ classroomId }) => {
         cookies.get("token"),
         {}
       )
-      console.log('; - result', result)
+      console.log("; - result", result)
 
       //template
       //thêm cột ID - name
       var columns = [
         {
-          Header: "ID",
+          Header: "Mã số",
           accessor: "studentId",
         },
         {
@@ -56,7 +56,7 @@ const GradePage = ({ classroomId }) => {
 
       //thêm cột total
       columns.push({
-        Header: "Total",
+        Header: "Tổng điểm",
         accessor: "total",
       })
       //template
@@ -66,7 +66,11 @@ const GradePage = ({ classroomId }) => {
     })()
   }, [])
 
-  return <AssignmentGradeList columns={columnsTemplate} data={data} />
+  return (
+    <div className="py-5">
+      <AssignmentGradeList columns={columnsTemplate} data={data} />
+    </div>
+  )
 }
 
 export default GradePage

@@ -8,7 +8,7 @@ import AssignmentList from "../../components/AssignmentList"
 import CustomSpinner from "../../components/CustomSpinner"
 import useDebounce from "../../hooks/useDebounce"
 
-const ExercisePage = ({ resClassroom }) => {
+const ExercisePage = ({ resClassroom, isTeacher, students }) => {
   const themeColorContext = useContext(ThemeColorContext)
   const [isShowModal, setIsShowModal] = useState(false)
   const [isShowEditTotalModal, setIsShowEditTotalModal] = useState(false)
@@ -286,6 +286,8 @@ const ExercisePage = ({ resClassroom }) => {
           classroom={resClassroom}
           setSumPoint={setSum}
           setTotalPoint={setTotal}
+          isTeacher={isTeacher}
+          students={students}
         />
 
         {isUpdateList && (

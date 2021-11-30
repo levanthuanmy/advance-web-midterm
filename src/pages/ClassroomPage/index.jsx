@@ -87,7 +87,14 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
   const renderMainContent = () => {
     if (currentTab === 0)
       return <Main resClassroom={resClassroom} isHost={isHost} />
-    if (currentTab === 1) return <ExercisePage resClassroom={resClassroom} />
+    if (currentTab === 1)
+      return (
+        <ExercisePage
+          resClassroom={resClassroom}
+          isTeacher={isTeacher}
+          students={students}
+        />
+      )
     if (currentTab === 2)
       return (
         <MemberPage

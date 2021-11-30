@@ -111,7 +111,7 @@ const MemberPage = ({
         postPreStudentList(body)
         console.log("handleFile - body", body)
 
-        reader.DONE && alert("check the log in the console")
+        reader.DONE && alert("Tải lên danh sách học viên thành công")
       }
 
       reader.readAsArrayBuffer(f)

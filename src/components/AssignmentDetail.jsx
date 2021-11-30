@@ -1,15 +1,27 @@
 import React, { useContext, useEffect, useState } from "react"
-import { Modal, Button, Table, Form, Spinner } from "react-bootstrap"
+import {
+  Modal,
+  Button,
+  Table,
+  Form,
+  Spinner,
+  InputGroup,
+  FormControl,
+} from "react-bootstrap"
+import { useForm } from "react-hook-form"
 import Cookies from "universal-cookie"
 import { get, post } from "../api"
 import { downloadTemplate } from "../config/helper"
 import { ThemeColorContext } from "../pages/ClassroomPage"
+import * as XLSX from "xlsx"
 
 const AssignmentDetail = ({
   isShowDetail,
   handleClose,
   assignment,
   classroom,
+  isTeacher,
+  students,
 }) => {
   const themeColor = useContext(ThemeColorContext)
   const [token] = useState(new Cookies().get("token"))
@@ -18,6 +30,7 @@ const AssignmentDetail = ({
   const [currentGrade, setCurrentGrade] = useState(-1)
   const [isError, setIsError] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const { register, setValue } = useForm()
 
   const getGradeList = async () => {
     try {
@@ -36,7 +49,7 @@ const AssignmentDetail = ({
   }
 
   const mergeArray = () => {
-    setAllStudents([...classroom?.students, ...classroom?.unmappedStudents])
+    setAllStudents([...students, ...classroom?.unmappedStudents])
   }
 
   const getGradeOfStudent = (student) => {
@@ -54,6 +67,7 @@ const AssignmentDetail = ({
     try {
       setIsLoading(true)
       const res = await post(`/set-grade-list`, token, {}, body)
+      setGradeList(res)
       console.log("postGradeForStudent - res", res)
     } catch (error) {
       console.log("postGradeForStudent - error", error)
@@ -89,12 +103,73 @@ const AssignmentDetail = ({
     }
   }
 
+  const genSampleData = () => {
+    const temp = [["Mã học viên", "Số điểm"]]
+
+    for (let item of gradeList) {
+      temp.push(
+        Object.values({
+          studentId: item?.studentId,
+          point: item?.grade !== -1 ? item?.grade : null,
+        })
+      )
+    }
+
+    return temp
+  }
+
+  const handleFile = (e) => {
+    try {
+      setIsLoading(true)
+
+      const files = e.target.files,
+        f = files[0]
+      const reader = new FileReader()
+
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result)
+        const workbook = XLSX.read(data, { type: "array" })
+        const res = XLSX.utils.sheet_to_json(
+          workbook.Sheets[workbook.SheetNames[0]]
+        )
+
+        let formatData = []
+
+        for (let row of res) {
+          formatData.push({
+            studentId: row["Mã học viên"],
+            grade: row["Số điểm"],
+          })
+        }
+
+        const body = {
+          classroomId: classroom?._id,
+          assignmentCode: assignment?._id,
+          gradeList: formatData,
+        }
+
+        postGradeForStudent(body)
+        console.log("handleFile - body", body)
+
+        reader.DONE && alert("Tải điểm thành công")
+      }
+
+      reader.readAsArrayBuffer(f)
+    } catch (error) {
+      console.log("handleFile - error", error)
+    } finally {
+      setIsLoading(false)
+      setValue("file", null)
+    }
+  }
+
   useEffect(() => {
     if (classroom && assignment) {
       getGradeList()
-      mergeArray()
+      students && mergeArray()
     }
-  }, [assignment, classroom])
+    return () => setGradeList(null)
+  }, [assignment, classroom, students])
 
   return (
     <Modal
@@ -109,38 +184,59 @@ const AssignmentDetail = ({
         </div>
       </Modal.Header>
       <Modal.Body className="p-0">
-        <div className="d-flex justify-content-between py-4 px-5 border-bottom">
+        <div className="d-flex justify-content-between align-items-center py-4 px-5 border-bottom">
           <div className="h4">Tổng điểm: {assignment?.point}</div>
-          <Button
-            onClick={() =>
-              downloadTemplate(
-                [
-                  ["Mã học viên", "Số điểm"],
-                  ["18127156", 10],
-                ],
-                "grade_list_template"
-              )
-            }
-            variant="outline-secondary"
-            size="sm"
-          >
-            <i className="bi bi-download me-2" />
-            Tải xuống biểu mẫu danh sách học viên
-          </Button>
+          <div>
+            <Button
+              className="mb-3 float-end"
+              onClick={() =>
+                downloadTemplate(genSampleData(), "grade_list_template")
+              }
+              variant="outline-secondary"
+              size="sm"
+            >
+              <i className="bi bi-download me-2" />
+              Tải xuống biểu mẫu bảng điểm
+            </Button>
+            {isTeacher && (
+              <InputGroup>
+                <FormControl
+                  size="sm"
+                  type="file"
+                  {...register("file")}
+                  accept=".xlsx"
+                  onChange={(e) => handleFile(e)}
+                />
+                <Button variant="secondary" className="" disabled size="sm">
+                  {isLoading ? (
+                    <Spinner
+                      size="sm"
+                      variant="light"
+                      animation="border"
+                      className="me-2"
+                    />
+                  ) : (
+                    <i className="bi bi-upload me-2" />
+                  )}
+                  Tải lên bảng điểm
+                </Button>
+              </InputGroup>
+            )}
+          </div>
         </div>
-        <div className="p-5">
-          <Table borderless className="border rounded">
+        <div className="p-5 panel">
+          <Table borderless hover className="shadow">
             <tbody className="rounded-3">
               <tr style={{ backgroundColor: themeColor }}>
-                <td className="text-white fs-3">MSSV</td>
-                <td className="text-white fs-3">Tên đầy đủ</td>
-                <td className="text-white fs-3">Số điểm</td>
+                <td className="text-white fs-3 px-3 ps-5">Mã học viên</td>
+                <td className="text-white fs-3 px-3">Tên đầy đủ</td>
+                <td className="text-white fs-3 px-3 pe-5">Số điểm</td>
               </tr>
               {allStudents?.map((student, id) => (
                 <tr key={id}>
-                  <td>{student?.studentId}</td>
-                  <td>{student?.name}</td>
-                  <td className="d-flex align-items-center">
+                  <td className="px-3 ps-5 fs-5">{student?.studentId}</td>
+                  <td className="px-3 fs-5">{student?.name}</td>
+                  <td className="d-flex align-items-center px-3 pe-5">
                     <Form.Control
                       size="sm"
                       type="number"

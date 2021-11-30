@@ -14,6 +14,8 @@ const AssignmentList = ({
   classroom,
   setSumPoint,
   setTotalPoint,
+  isTeacher,
+  students,
 }) => {
   const [onDelete, setOnDelete] = useState({ code: "", isDelete: false })
   const [onEdit, setOnEdit] = useState({
@@ -187,6 +189,8 @@ const AssignmentList = ({
         }
         assignment={assignments[onShowDetail?.assignmentIndex || 0]}
         classroom={classroom}
+        isTeacher={isTeacher}
+        students={students}
       />
     </div>
   )
