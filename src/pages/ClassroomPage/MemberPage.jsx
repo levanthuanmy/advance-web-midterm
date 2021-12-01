@@ -103,7 +103,7 @@ const MemberPage = ({
         let formatData = []
 
         for (let row of res) {
-          formatData.push({ studentId: row["MSSV"], name: row["Tên"] })
+          formatData.push({ studentId: row["Mã học viên"], name: row["Tên"] })
         }
 
         const body = { classroomId: resClassroom._id, studentList: formatData }
