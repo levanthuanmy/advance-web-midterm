@@ -80,7 +80,7 @@ const AssignmentItem = ({
 
   const CustomToggle = React.forwardRef(({ onClick }, ref) => (
     <div
-      className="rounded-circle cursor-pointer ms-3 d-flex justify-content-center align-items-center cus-toggle-menu-btn"
+      className="position-relative rounded-circle cursor-pointer ms-3 d-flex justify-content-center align-items-center cus-toggle-menu-btn"
       style={{
         color: themeColorContext,
       }}
@@ -104,9 +104,6 @@ const AssignmentItem = ({
         color: themeColorContext,
         borderColor: themeColorContext,
       }}
-      onClick={() =>
-        setOnShowDetail({ assignmentIndex: index, isShowDetail: true })
-      }
     >
       <div
         className="rounded-circle border text-white d-flex justify-content-center align-items-center"
@@ -133,6 +130,18 @@ const AssignmentItem = ({
             eventKey="1"
             className="text-center"
             onClick={() =>
+              setOnShowDetail({ assignmentIndex: index, isShowDetail: true })
+            }
+          >
+            Xem chi tiết
+          </Dropdown.Item>
+
+          <Dropdown.Divider />
+
+          <Dropdown.Item
+            eventKey="1"
+            className="text-center"
+            onClick={() =>
               setOnEdit({
                 code: id,
                 isEdit: true,
@@ -141,7 +150,9 @@ const AssignmentItem = ({
           >
             Sửa
           </Dropdown.Item>
+
           <Dropdown.Divider />
+
           <Dropdown.Item
             eventKey="2"
             className="text-danger text-center"
