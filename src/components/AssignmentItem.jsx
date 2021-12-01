@@ -2,7 +2,6 @@ import React, { useContext, useRef } from "react"
 import { Dropdown } from "react-bootstrap"
 import { useDrag, useDrop } from "react-dnd"
 import { ThemeColorContext } from "../pages/ClassroomPage"
-import { useNavigate, useLocation } from "react-router-dom"
 
 const AssignmentItem = ({
   id,
@@ -12,11 +11,9 @@ const AssignmentItem = ({
   setOnDelete,
   setOnEdit,
   setOnShowDetail,
+  isTeacher,
 }) => {
   const ref = useRef(null)
-  const navigate = useNavigate()
-  const location = useLocation()
-
   const themeColorContext = useContext(ThemeColorContext)
 
   const [{ handlerId }, drop] = useDrop({
@@ -137,34 +134,37 @@ const AssignmentItem = ({
           </Dropdown.Item>
 
           <Dropdown.Divider />
+          {isTeacher && (
+            <>
+              <Dropdown.Item
+                eventKey="1"
+                className="text-center"
+                onClick={() =>
+                  setOnEdit({
+                    code: id,
+                    isEdit: true,
+                  })
+                }
+              >
+                Sửa
+              </Dropdown.Item>
 
-          <Dropdown.Item
-            eventKey="1"
-            className="text-center"
-            onClick={() =>
-              setOnEdit({
-                code: id,
-                isEdit: true,
-              })
-            }
-          >
-            Sửa
-          </Dropdown.Item>
+              <Dropdown.Divider />
 
-          <Dropdown.Divider />
-
-          <Dropdown.Item
-            eventKey="2"
-            className="text-danger text-center"
-            onClick={() =>
-              setOnDelete({
-                code: id,
-                isDelete: true,
-              })
-            }
-          >
-            Xoá
-          </Dropdown.Item>
+              <Dropdown.Item
+                eventKey="2"
+                className="text-danger text-center"
+                onClick={() =>
+                  setOnDelete({
+                    code: id,
+                    isDelete: true,
+                  })
+                }
+              >
+                Xoá
+              </Dropdown.Item>
+            </>
+          )}
         </Dropdown.Menu>
       </Dropdown>
     </div>

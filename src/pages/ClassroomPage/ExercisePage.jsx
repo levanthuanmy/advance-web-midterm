@@ -244,38 +244,42 @@ const ExercisePage = ({ resClassroom, isTeacher, students }) => {
         <div className="d-flex align-items-center justify-content-between">
           <div className="fs-4 mb-0 d-flex align-items-center">
             Tổng điểm: {total}
-            <div
-              className="rounded-circle border cus-toggle-menu-btn d-flex justify-content-center align-items-center mx-4"
-              onClick={() => {
-                reset()
-                setIsShowEditTotalModal(true)
-              }}
-            >
-              <i
-                className="bi bi-pencil fs-3"
-                style={{
-                  color: themeColorContext,
+            {isTeacher && (
+              <div
+                className="rounded-circle border cus-toggle-menu-btn d-flex justify-content-center align-items-center mx-4"
+                onClick={() => {
+                  reset()
+                  setIsShowEditTotalModal(true)
                 }}
-              />
-            </div>
+              >
+                <i
+                  className="bi bi-pencil fs-3"
+                  style={{
+                    color: themeColorContext,
+                  }}
+                />
+              </div>
+            )}
           </div>
-          <div className="fs-4 mb-0 d-flex align-items-center">
-            Tạo bài tập mới
-            <div
-              className="rounded-circle border cus-toggle-menu-btn d-flex justify-content-center align-items-center mx-4"
-              onClick={() => {
-                reset()
-                setIsShowModal(true)
-              }}
-            >
-              <i
-                className="bi bi-plus-lg fs-3"
-                style={{
-                  color: themeColorContext,
+          {isTeacher && (
+            <div className="fs-4 mb-0 d-flex align-items-center">
+              Tạo bài tập mới
+              <div
+                className="rounded-circle border cus-toggle-menu-btn d-flex justify-content-center align-items-center mx-4"
+                onClick={() => {
+                  reset()
+                  setIsShowModal(true)
                 }}
-              />
+              >
+                <i
+                  className="bi bi-plus-lg fs-3"
+                  style={{
+                    color: themeColorContext,
+                  }}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
         {renderModal()}
         {renderEditTotalModal()}

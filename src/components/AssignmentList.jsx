@@ -177,6 +177,7 @@ const AssignmentList = ({
           setOnDelete={setOnDelete}
           setOnEdit={setOnEdit}
           setOnShowDetail={setOnShowDetail}
+          isTeacher={isTeacher}
         />
       ))}
       <AssignmentDetail
