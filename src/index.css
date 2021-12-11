@@ -235,3 +235,24 @@ table {
   border-radius: 1rem !important;
   overflow: hidden;
 }
+
+.cus-notif-dropdown {
+  overflow-wrap: break-word;
+  width: 17rem;
+  visibility: hidden;
+  z-index: 2;
+}
+
+.cus-notif-dropdown--show {
+  visibility: visible;
+}
+
+.cus-notif {
+  word-break: break-all;
+}
+
+.cus-notif-list{
+  overflow: scroll;
+  overflow-x: hidden;
+  height: 300px;
+}
