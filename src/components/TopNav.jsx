@@ -4,7 +4,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import Cookies from "universal-cookie";
 import socketIOClient from "socket.io-client";
 import {API_URL} from "../config/constants";
-import {get} from "../api";
+import {get, post} from "../api";
 
 const baseURL = API_URL;
 
@@ -29,7 +29,7 @@ const TopNav = ({
     const [isDropdDownNotif, setIsDropdDownNotif] = useState(false);
     const [userInfo, setUserInfo] = useState();
     const [notifArray, setNotifArray] = useState([]);
-    const [apiNotif, setApiNotif] = useState([]);
+    const [newNotifCount, setNewNotifCount] = useState(0);
 
     const [response, setResponse] = useState("");
 
@@ -44,36 +44,34 @@ const TopNav = ({
 
     const addNewNotif = (notif) => {
         var newArr = notifArray;
-        console.log("set by socket", notifArray)
-        console.log("set by api", notifArray)
         newArr.push(notif);
-        console.log("set by socket 2", notifArray)
-        console.log("set by api 2", notifArray)
-
-
         setNotifArray(newArr)
     }
-
+    var socket;
     useEffect(() => {
         (async () => {
             console.log("didConnect")
-            var arr = await getNotificationList()
-            setNotifArray(arr.reverse())
+            var data = await getNotificationList()
+            console.log("count api", data.count)
+            setNewNotifCount(data.count)
+            setNotifArray(data.notif.reverse())
         })()
 
-        const socket = socketIOClient(baseURL);
+        socket = socketIOClient(baseURL);
         socket.on("connect", function (data) {
-
 
             socket.emit('setToken', `${cookies.get("token")}`);
 
-            socket.on('newNotif', function (newNotifList) {
-                setNotifArray(newNotifList.reverse())
+            socket.on('newNotif', function (data) {
+                console.log("count", data.count)
+                setNewNotifCount(data.count)
+                setNotifArray(data.notif.reverse())
             });
 
             socket.on('setClientId', function (clientId) {
                 console.log("socket client Id", clientId);
             });
+
         });
         return () => socket.disconnect();
 
@@ -107,6 +105,19 @@ const TopNav = ({
         }
     }, [location.pathname, setCurrentTab]);
 
+    async function postSeen() {
+        post(
+            `/didSeenNotifications`,
+            cookies.get("token"),
+            {}
+        )
+    }
+
+    const closeDropDownNotif = async () => {
+        postSeen()
+        setNewNotifCount(0)
+        setIsDropdDownNotif(false)
+    }
     const renderDropDown = () => {
         return (
             <div
@@ -148,7 +159,8 @@ const TopNav = ({
             <div className="cus-notif-list">
                 {notifArray.map((item, index) => (
                     <div key={index}
-                         className="cus-dropdown-opt cus-notif text-center border cus-rounded-dot75rem p-2 m-1 text-secondary"
+                         className={`cus-dropdown-opt cus-notif text-center border cus-rounded-dot75rem p-2 m-1 text-secondary 
+                         ${index < newNotifCount && "text-danger"} ${index >= newNotifCount && "text-muted"}`}
                          onClick={() => {
                          }}
                     >
@@ -172,7 +184,9 @@ const TopNav = ({
                 <div className="mt-2 bg-white border shadow-sm cus-rounded-dot75rem text-truncate">
                     <div className="pt-3 px-3 fw-bold d-flex justify-content-between align-items-center">
                         Thông báo
-                        <i className="bi bi-x-lg" onClick={() => setIsDropdDownNotif(false)}/>
+                        <i className="bi bi-x-lg" onClick={() => {
+                            closeDropDownNotif()
+                        }}/>
                     </div>
                     <div className="mt-3 border-top p-1 d-flex flex-column justify-content-between">
                         {renderNotifList()}
@@ -232,9 +246,10 @@ const TopNav = ({
                 <div
                     className="cus-my-avatar bg-white rounded-circle me-3 border cursor-pointer"
                     onClick={() => setIsDropdDownNotif(true)}
-                    onMouseLeave={() => setIsDropdDownNotif(false)}
+                    onMouseLeave={() => closeDropDownNotif()}
                 >
-                    <i className="bi bi-bell fs-3 rounded"/>
+                    {/*<i className="bi bi-bell fs-3 rounded"/>*/}
+                    <p>{newNotifCount}</p>
                     {renderNotifDropDown()}
                 </div>
                 <div
