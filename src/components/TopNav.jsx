@@ -31,16 +31,11 @@ const TopNav = ({
   const cookies = new Cookies()
   const [socket] = useState(socketIOClient(API_URL))
 
-  const getNotificationList = async () => {
-    const notification = await get(`/notifications`, cookies.get("token"), {})
-    return notification
-  }
-
   const getNotifications = async () => {
     try {
       console.log("didConnect")
 
-      const data = await getNotificationList()
+      const data = await get(`/notifications`, cookies.get("token"), {})
 
       console.log("count api", data?.count)
 
@@ -106,9 +101,12 @@ const TopNav = ({
     await post(`/didSeenNotifications`, cookies.get("token"), {})
   }
 
-  const closeNotificationDropDown = async () => {
-    postSeen()
-    setNewNotificationCount(0)
+  const closeNotificationDropDown = () => {
+    if (newNotificationCount) {
+      postSeen()
+      setNewNotificationCount(0)
+    }
+
     setIsNotificationDropDown(false)
   }
 
@@ -150,18 +148,29 @@ const TopNav = ({
 
   const renderNotificationList = () => {
     return (
-      <div className="cus-notif-list">
+      <div className="cus-notif-list ps-4 pe-3 position-relative text-start">
         {resNotifications.map((item, index) => (
           <div
             key={index}
-            className={`cus-dropdown-opt cus-notif text-center border cus-rounded-dot75rem p-2 m-1 text-secondary ${
+            className={`cus-dropdown-opt position-relative cus-notif border-bottom py-3 text-wrap ${
               index < newNotificationCount && "text-danger"
             } ${index >= newNotificationCount && "text-muted"}`}
-            onClick={() => {}}
           >
-            {item.description}
+            {index < newNotificationCount && (
+              <div
+                className="position-absolute rounded-circle bg-primary"
+                style={{ height: 13, width: 13, top: 20, left: -17 }}
+              />
+            )}
+            <span
+              className={`${
+                index < newNotificationCount ? "text-primary" : "text-black"
+              }`}
+            >
+              {item.description}
+            </span>
             <br />
-            {item.time}
+            <span className="small text-secondary">{item.time}</span>
           </div>
         ))}
       </div>
@@ -171,17 +180,14 @@ const TopNav = ({
   const renderNotificationDropDown = () => {
     return (
       <div
-        className={`cus-notif-dropdown position-relative float-end ${
+        className={`cus-notif-dropdown position-relative float-end mt-1 ${
           isNotificationDropDown && "cus-notif-dropdown--show"
         }`}
       >
         <div className="mt-2 bg-white border shadow-sm cus-rounded-dot75rem text-truncate">
           <div className="pt-3 px-3 fw-bold d-flex justify-content-between align-items-center">
             Thông báo
-            <i
-              className="bi bi-x-lg"
-              onClick={() => closeNotificationDropDown()}
-            />
+            <i className="bi bi-x-lg" onClick={closeNotificationDropDown} />
           </div>
           <div className="mt-3 border-top p-1 d-flex flex-column justify-content-between">
             {renderNotificationList()}
@@ -239,18 +245,27 @@ const TopNav = ({
 
       <div id="right" className="ps-4 d-flex align-items-center">
         <div
-          className="cus-my-avatar bg-white rounded-circle me-3 border cursor-pointer"
-          onClick={() => setIsNotificationDropDown(true)}
-          onMouseLeave={() => closeNotificationDropDown()}
+          className="cus-my-avatar bg-white rounded-circle me-3 cursor-pointer position-relative text-center"
+          onClick={() =>
+            isNotificationDropDown
+              ? closeNotificationDropDown()
+              : setIsNotificationDropDown(true)
+          }
         >
-          <i className="bi bi-bell fs-3 rounded"/>
-          <p>{newNotificationCount}</p>
+          <i className="bi bi-bell-fill fs-3 rounded text-black-50" />
+          {newNotificationCount > 0 && (
+            <span
+              className="position-absolute rounded px-1 bg-primary text-white border border-white"
+              style={{ top: -6, right: 23, fontSize: "0.875rem" }}
+            >
+              {newNotificationCount}
+            </span>
+          )}
           {renderNotificationDropDown()}
         </div>
         <div
           className="cus-my-avatar bg-white rounded-circle me-3 cursor-pointer"
-          onMouseEnter={() => setIsDropdown(true)}
-          onMouseLeave={() => setIsDropdown(false)}
+          onClick={() => setIsDropdown(!isDropdown)}
         >
           <Image
             src={`/images/avatar.png`}

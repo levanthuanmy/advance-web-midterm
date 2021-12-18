@@ -238,7 +238,7 @@ table {
 
 .cus-notif-dropdown {
   overflow-wrap: break-word;
-  width: 17rem;
+  width: 20rem;
   visibility: hidden;
   z-index: 2;
 }
@@ -247,12 +247,20 @@ table {
   visibility: visible;
 }
 
-.cus-notif {
-  word-break: break-all;
-}
-
-.cus-notif-list{
+.cus-notif-list {
   overflow: scroll;
   overflow-x: hidden;
-  height: 300px;
+  height: 22rem;
+}
+
+.cus-notif-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.cus-notif-list::-webkit-scrollbar-thumb {
+  background-color: rgb(99, 99, 99);
+}
+
+.cus-notif-list::-webkit-scrollbar-track {
+  background-color: rgb(192, 192, 192);
 }
