@@ -8,22 +8,29 @@ const GradePage = ({ classroomId }) => {
   const [columnsTemplate, setColumnsTemplate] = useState([])
 
   const cookies = new Cookies()
-  // Using useEffect to call the API once mounted and set the data
+
   const getAssignmentsName = async () => {
-    const allAssignmentResult = await get(
-      `/assignments/${classroomId}`,
-      cookies.get("token"),
-      {}
-    )
-    const assignmentNames = []
-    allAssignmentResult.params.forEach((assignment) => {
-      assignmentNames.push(assignment.name)
-    })
-    return assignmentNames
+    try {
+      const assignmentNames = []
+      const allAssignmentResult = await get(
+        `/assignments/${classroomId}`,
+        cookies.get("token"),
+        {}
+      )
+
+      allAssignmentResult?.params?.forEach((assignment) => {
+        assignmentNames.push(assignment.name)
+      })
+
+      return assignmentNames
+    } catch (error) {
+      console.log("getAssignmentsName - error", error)
+      return ""
+    }
   }
 
-  useEffect(() => {
-    ;(async () => {
+  const handleData = async () => {
+    try {
       const assignmentNames = await getAssignmentsName()
 
       const result = await get(
@@ -35,7 +42,7 @@ const GradePage = ({ classroomId }) => {
 
       //template
       //thêm cột ID - name
-      var columns = [
+      let columns = [
         {
           Header: "Mã số",
           accessor: "studentId",
@@ -47,7 +54,7 @@ const GradePage = ({ classroomId }) => {
       ]
 
       //đẩy từng cột pa vào
-      for (var i = 0; i < assignmentNames.length; i++) {
+      for (let i = 0; i < assignmentNames.length; i++) {
         columns.push({
           Header: assignmentNames[i],
           accessor: `assignmentGrade[${i}]`,
@@ -62,9 +69,26 @@ const GradePage = ({ classroomId }) => {
       //template
 
       setColumnsTemplate([...columns])
-      setData(result)
-    })()
-  }, [])
+
+      setData(
+        result.map((item) => {
+          const newItem = {
+            studentId: item.studentId,
+            name: item.name,
+            total: item.total,
+            assignmentGrade: item.assignmentGrade.map((a) => a.grade),
+          }
+          return newItem
+        })
+      )
+    } catch (error) {
+      console.log("handleData - error", error)
+    }
+  }
+
+  useEffect(() => {
+    handleData()
+  }, [classroomId])
 
   return (
     <div className="py-5">

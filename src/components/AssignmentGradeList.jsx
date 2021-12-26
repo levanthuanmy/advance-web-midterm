@@ -6,7 +6,6 @@ import { ThemeColorContext } from "../pages/ClassroomPage"
 const AssignmentGradeList = ({ columns, data }) => {
   const {
     getTableProps, // table props from react-table
-    getTableBodyProps, // table body props from react-table
     headerGroups, // headerGroups, if your table has groupings
     rows, // rows for the table based on the data passed
     prepareRow, // Prepare the row (this function needs to be called for each row before getting the row props)
@@ -26,20 +25,26 @@ const AssignmentGradeList = ({ columns, data }) => {
             {...headerGroup.getHeaderGroupProps()}
           >
             {headerGroup.headers.map((column) => (
-              <td className="text-white fs-3 px-3 border-start" {...column.getHeaderProps()}>
+              <td
+                className="text-white fs-3 px-3 border-start"
+                {...column.getHeaderProps()}
+              >
                 {column.render("Header")}
               </td>
             ))}
           </tr>
         ))}
 
-        {rows.map((row, i) => {
+        {rows.map((row) => {
           prepareRow(row)
           return (
             <tr {...row.getRowProps()}>
               {row.cells.map((cell) => {
                 return (
-                  <td className="px-3 fs-5 border-start" {...cell.getCellProps()}>
+                  <td
+                    className="px-3 fs-5 border-start"
+                    {...cell.getCellProps()}
+                  >
                     {cell.render("Cell")}
                   </td>
                 )

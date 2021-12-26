@@ -237,16 +237,22 @@ const AssignmentDetail = ({
                   <td className="px-3 ps-5 fs-5">{student?.studentId}</td>
                   <td className="px-3 fs-5">{student?.name}</td>
                   <td className="d-flex align-items-center px-3 pe-5">
-                    <Form.Control
-                      size="sm"
-                      type="number"
-                      min="0"
-                      max={assignment?.point}
-                      maxLength={String(assignment?.point).length}
-                      defaultValue={getGradeOfStudent(student)}
-                      onChange={(e) => handleChange(e)}
-                      onBlur={(e) => handleGrade(e, student?.studentId)}
-                    />
+                    {isTeacher ? (
+                      <Form.Control
+                        size="sm"
+                        type="number"
+                        min="0"
+                        max={assignment?.point}
+                        maxLength={String(assignment?.point).length}
+                        defaultValue={getGradeOfStudent(student)}
+                        onChange={(e) => handleChange(e)}
+                        onBlur={(e) => handleGrade(e, student?.studentId)}
+                      />
+                    ) : (
+                      <div className="fs-3">
+                        {getGradeOfStudent(student) || "_"}
+                      </div>
+                    )}
                     <div className="fs-3 mx-3">/</div>
                     <div className="fs-3">{assignment?.point}</div>
                   </td>
