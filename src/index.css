@@ -264,3 +264,8 @@ table {
 .cus-notif-list::-webkit-scrollbar-track {
   background-color: rgb(192, 192, 192);
 }
+
+#listUsers table {
+  table-layout: fixed;
+  min-width: 50rem;
+}

@@ -5,6 +5,8 @@ import { get } from "./api"
 import HandleLogin from "./components/HandleLogin"
 import LeftMenu from "./components/LeftMenu"
 import TopNav from "./components/TopNav"
+import ClassManagement from "./pages/AdminPage/ClassManagement"
+import UserManagement from "./pages/AdminPage/UserManagement"
 import ClassroomPage from "./pages/ClassroomPage"
 import HomePage from "./pages/HomePage"
 import PreJoinClassPage from "./pages/PreJoinClassPage"
@@ -28,7 +30,6 @@ const App = () => {
       res && setIsLoading(false)
     } catch (error) {
       setIsLoading(false)
-      console.log('getClassrooms - error', error)
     }
   }
 
@@ -78,6 +79,9 @@ const App = () => {
             <Route path="/c/:id/join" element={<PreJoinClassPage />} />
 
             <Route path="/user-info" element={<UserInformationPage />} />
+
+            <Route path="/admin/users-management" element={<UserManagement />} />
+            <Route path="/admin/classes-management" element={<ClassManagement />} />
           </Routes>
         </div>
 
