@@ -13,6 +13,7 @@ const AssignmentItem = ({
   setOnShowDetail,
   isTeacher,
 }) => {
+  console.log('id', id)
   const ref = useRef(null)
   const themeColorContext = useContext(ThemeColorContext)
 

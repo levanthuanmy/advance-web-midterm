@@ -59,9 +59,9 @@ const AssignmentList = ({
         {},
         { classroomId: classroom?._id, assignmentCode: onDelete?.code }
       )
-      setAssignments(res?.assignments?.params)
-      setTotalPoint(res?.assignments?.total)
-      setSumPoint(res?.assignments?.sum)
+      setAssignments(res?.params)
+      setTotalPoint(res?.total)
+      setSumPoint(res?.sum)
       setOnDelete({ code: "", isDelete: false })
     } catch (error) {
       setOnDelete({ code: "", isDelete: false })
@@ -73,9 +73,9 @@ const AssignmentList = ({
     try {
       const res = await post(`/update-assignment`, token, {}, body)
 
-      setAssignments(res?.assignments?.params)
-      setTotalPoint(res?.assignments?.total)
-      setSumPoint(res?.assignments?.sum)
+      setAssignments(res?.params)
+      setTotalPoint(res?.total)
+      setSumPoint(res?.sum)
       setOnEdit({ code: "", isEdit: false })
     } catch (error) {
       setOnEdit({ code: "", isEdit: false })
@@ -169,9 +169,9 @@ const AssignmentList = ({
       {renderModal()}
       {assignments?.map((assignment, id) => (
         <AssignmentItem
-          key={assignment?.code}
+          key={assignment?._id}
           index={id}
-          id={assignment?.code}
+          id={assignment?._id}
           assignment={assignment}
           moveItem={moveItem}
           setOnDelete={setOnDelete}
