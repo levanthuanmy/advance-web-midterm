@@ -275,6 +275,16 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
 
           {loginMode ? renderSignUpForm() : renderSignInForm()}
 
+          <div
+            className="text-center pt-4 text-secondary cursor-pointer"
+            onClick={() => {
+              setIsShowLogin(false)
+              navigate("/reset-password")
+            }}
+          >
+            Quên mật khẩu
+          </div>
+
           <div className="d-flex justify-content-between">
             <Button
               disabled={isLoading}

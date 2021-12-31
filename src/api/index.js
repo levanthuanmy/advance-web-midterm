@@ -23,8 +23,6 @@ export const get = async (path, token = '', params, headers, responseType = 'jso
       console.log(error.response.data)
       console.log(error.response.status)
       console.log(error.response.headers)
-
-      throw error.response.data.error
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
@@ -33,8 +31,6 @@ export const get = async (path, token = '', params, headers, responseType = 'jso
     } else {
       // Something happened in setting up the request that triggered an Error
       console.log('Error', error.message)
-
-      throw error.message
     }
     console.log(error.config)
 
@@ -58,7 +54,6 @@ export const post = async (path, token = '', params, data, headers) => {
       console.log(error.response.data)
       console.log(error.response.status)
       console.log(error.response.headers)
-      throw error.response.data.error
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
@@ -67,7 +62,6 @@ export const post = async (path, token = '', params, data, headers) => {
     } else {
       // Something happened in setting up the request that triggered an Error
       console.log('Error', error.message)
-      throw error.message
     }
     console.log(error.config)
     throw error
@@ -89,8 +83,6 @@ export const patch = async (path, token = '', params, data, headers) => {
       console.log(error.response.data)
       console.log(error.response.status)
       console.log(error.response.headers)
-
-      throw error.response.data.error
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
@@ -99,9 +91,6 @@ export const patch = async (path, token = '', params, data, headers) => {
     } else {
       // Something happened in setting up the request that triggered an Error
       console.log('Error', error.message)
-
-      throw error.message
-
     }
     console.log(error.config)
 

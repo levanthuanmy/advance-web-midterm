@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Route, Routes } from "react-router-dom"
+import { Route, Routes, useLocation } from "react-router-dom"
 import Cookies from 'universal-cookie'
 import { get } from "./api"
 import HandleLogin from "./components/HandleLogin"
@@ -10,9 +10,11 @@ import UserManagement from "./pages/AdminPage/UserManagement"
 import ClassroomPage from "./pages/ClassroomPage"
 import HomePage from "./pages/HomePage"
 import PreJoinClassPage from "./pages/PreJoinClassPage"
+import ResetPasswordPage from "./pages/ResetPasswordPage"
 import UserInformationPage from "./pages/UserInformationPage"
 
 const App = () => {
+  const location = useLocation()
   const [resClassrooms, setResClassrooms] = useState()
   const [currentTab, setCurrentTab] = useState(0)
   const [showMenu, setShowMenu] = useState(false)
@@ -37,10 +39,13 @@ const App = () => {
     if (token?.length && token !== 'undefined') {
       getClassrooms()
     }
+    else if (location.pathname.includes('/reset-password')) {
+      setIsShowLogin(false)
+    }
     else {
       setIsShowLogin(true)
     }
-  }, [token])
+  }, [location.pathname, token])
 
   return (
     <>
@@ -81,7 +86,10 @@ const App = () => {
             <Route path="/user-info" element={<UserInformationPage />} />
 
             <Route path="/admin/users-management" element={<UserManagement />} />
+
             <Route path="/admin/classes-management" element={<ClassManagement />} />
+
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
           </Routes>
         </div>
 
