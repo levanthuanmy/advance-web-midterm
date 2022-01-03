@@ -1,6 +1,8 @@
 import React, { useState } from "react"
 import { Button, Form, Spinner } from "react-bootstrap"
 import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router-dom"
+import Cookies from "universal-cookie"
 import { post } from "../api"
 import { minLengthPassword } from "../config/constants"
 
@@ -11,6 +13,8 @@ const ChangingPassword = ({ email, handleBack }) => {
     formState: { errors },
   } = useForm()
   const [isLoading, setIsLoading] = useState(false)
+  const cookies = new Cookies()
+  const navigate = useNavigate()
 
   const changePassword = async (body) => {
     try {
@@ -19,12 +23,42 @@ const ChangingPassword = ({ email, handleBack }) => {
       const res = await post(`/users/reset-password`, null, {}, body)
 
       console.log("changePassword - res", res)
+      alert(res)
+
+      userLogin({ email, password: body?.password })
     } catch (error) {
       console.log("changePassword - error", error)
       alert(error?.response?.data)
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const userLogin = async (body) => {
+    try {
+      setIsLoading(true)
+
+      const res = await post("/users/login", "", {}, body)
+
+      console.log("Login success")
+
+      storeUserInfo(res?.user)
+      cookies.set("token", res?.token)
+
+      setIsLoading(false)
+
+      navigate("/")
+      window?.location.reload()
+    } catch (error) {
+      setIsLoading(false)
+      alert(error)
+      console.log("userLogin - error", error)
+    }
+  }
+
+  const storeUserInfo = (res) => {
+    const localStorage = window?.localStorage
+    localStorage?.setItem("user-info", JSON.stringify(res))
   }
 
   const onSubmit = (data) => {
