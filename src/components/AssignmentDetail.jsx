@@ -7,6 +7,8 @@ import {
   Spinner,
   InputGroup,
   FormControl,
+  Row,
+  Col,
 } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 import Cookies from "universal-cookie"
@@ -14,6 +16,8 @@ import { get, post } from "../api"
 import { downloadTemplate } from "../config/helper"
 import { ThemeColorContext } from "../pages/ClassroomPage"
 import * as XLSX from "xlsx"
+import ReviewRequestModal from "./ReviewRequestModal"
+import GradeReview from "./GradeReview"
 
 const AssignmentDetail = ({
   isShowDetail,
@@ -26,11 +30,14 @@ const AssignmentDetail = ({
   const themeColor = useContext(ThemeColorContext)
   const [token] = useState(new Cookies().get("token"))
   const [gradeList, setGradeList] = useState()
+  console.log("gradeList", gradeList)
   const [allStudents, setAllStudents] = useState()
   const [currentGrade, setCurrentGrade] = useState(-1)
   const [isError, setIsError] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { register, setValue } = useForm()
+  const [isShow, setIsShow] = useState(false)
+  const [resReviewId, setResReviewId] = useState(null)
 
   const getGradeList = async () => {
     try {
@@ -171,6 +178,8 @@ const AssignmentDetail = ({
     return () => setGradeList(null)
   }, [assignment, classroom, students])
 
+  console.log("object", isTeacher)
+
   return (
     <Modal
       show={isShowDetail}
@@ -224,43 +233,74 @@ const AssignmentDetail = ({
             )}
           </div>
         </div>
-        <div className="p-5 panel">
-          <Table borderless hover className="shadow">
-            <tbody className="rounded-3">
-              <tr style={{ backgroundColor: themeColor }}>
-                <td className="text-white fs-3 px-3 ps-5">Mã học viên</td>
-                <td className="text-white fs-3 px-3">Tên đầy đủ</td>
-                <td className="text-white fs-3 px-3 pe-5">Số điểm</td>
-              </tr>
-              {allStudents?.map((student, id) => (
-                <tr key={id}>
-                  <td className="px-3 ps-5 fs-5">{student?.studentId}</td>
-                  <td className="px-3 fs-5">{student?.name}</td>
-                  <td className="d-flex align-items-center px-3 pe-5">
-                    {isTeacher ? (
-                      <Form.Control
-                        size="sm"
-                        type="number"
-                        min="0"
-                        max={assignment?.point}
-                        maxLength={String(assignment?.point).length}
-                        defaultValue={getGradeOfStudent(student)}
-                        onChange={(e) => handleChange(e)}
-                        onBlur={(e) => handleGrade(e, student?.studentId)}
-                      />
-                    ) : (
-                      <div className="fs-3">
-                        {getGradeOfStudent(student) || "_"}
-                      </div>
-                    )}
-                    <div className="fs-3 mx-3">/</div>
-                    <div className="fs-3">{assignment?.point}</div>
-                  </td>
+        <Row className="m-0">
+          <Col xs="12" lg="6" className="p-5 panel">
+            <Table borderless hover className="shadow">
+              <tbody className="rounded-3">
+                <tr style={{ backgroundColor: themeColor }}>
+                  <td className="text-white fs-4 px-3 ps-5">Mã học viên</td>
+                  <td className="text-white fs-4 px-3">Tên đầy đủ</td>
+                  <td className="text-white fs-4 px-3 pe-5">Số điểm</td>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
-        </div>
+                {allStudents?.map((student, id) => (
+                  <tr key={id}>
+                    <td className="px-3 ps-5 fs-6">{student?.studentId}</td>
+                    <td className="px-3 fs-6">{student?.name}</td>
+                    <td className="d-flex align-items-center px-3 pe-5">
+                      {isTeacher ? (
+                        <Form.Control
+                          size="sm"
+                          type="number"
+                          min="0"
+                          max={assignment?.point}
+                          maxLength={String(assignment?.point).length}
+                          defaultValue={getGradeOfStudent(student)}
+                          onChange={(e) => handleChange(e)}
+                          onBlur={(e) => handleGrade(e, student?.studentId)}
+                        />
+                      ) : (
+                        <div className="fs-4">
+                          {getGradeOfStudent(student) || "_"}
+                        </div>
+                      )}
+                      <div className="fs-4 mx-3">/</div>
+                      <div className="fs-4">{assignment?.point}</div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Col>
+          <Col xs="12" lg="6" className="p-5 ps-0">
+            {!Boolean(isTeacher) && (
+              <>
+                <Button
+                  className="cus-rounded-dot75rem"
+                  onClick={() => setIsShow(true)}
+                >
+                  Tạo yêu cầu phúc khảo
+                </Button>
+                <GradeReview
+                  isTeacher={Boolean(isTeacher)}
+                  gradeList={gradeList}
+                  resReviewId={resReviewId}
+                />
+              </>
+            )}
+            {Boolean(isTeacher) &&
+              gradeList?.map((item, id) =>
+                item.reviewId ? (
+                  <GradeReview
+                    key={id}
+                    isTeacher={Boolean(isTeacher)}
+                    resReviewId={item.reviewId}
+                  />
+                ) : (
+                  <></>
+                )
+              )}
+          </Col>
+        </Row>
       </Modal.Body>
 
       {isLoading && (
@@ -276,6 +316,15 @@ const AssignmentDetail = ({
           </div>
         </div>
       )}
+
+      <ReviewRequestModal
+        show={isShow}
+        onHide={() => setIsShow(false)}
+        maxGrade={assignment?.point}
+        classroomId={classroom?._id}
+        assignmentCode={assignment?._id}
+        setResReviewId={setResReviewId}
+      />
     </Modal>
   )
 }

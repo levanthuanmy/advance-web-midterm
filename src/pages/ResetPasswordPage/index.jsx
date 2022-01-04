@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form"
 import { post } from "../../api"
 import ChangingPassword from "../../components/ChangingPassword"
 import { emailPattern } from "../../config/constants"
+import { useNavigate } from "react-router-dom"
 
 const ResetPasswordPage = () => {
   const {
@@ -14,6 +15,7 @@ const ResetPasswordPage = () => {
   } = useForm()
   const [isLoading, setIsLoading] = useState(false)
   const [isShow, setIsShow] = useState(false)
+  const navigate = useNavigate()
 
   const getCode = async (body) => {
     try {
@@ -75,7 +77,10 @@ const ResetPasswordPage = () => {
             )}
           </Form.Group>
 
-          <div className="mt-4 float-start text-primary cursor-pointer">
+          <div
+            className="mt-4 float-start text-primary cursor-pointer"
+            onClick={() => navigate("/")}
+          >
             Về trang chủ
           </div>
 
