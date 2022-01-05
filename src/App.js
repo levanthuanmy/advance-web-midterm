@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react"
 import { Route, Routes, useLocation } from "react-router-dom"
 import Cookies from 'universal-cookie'
 import { get } from "./api"
+import HandleAdminLogin from "./components/HandleAdminLogin"
 import HandleLogin from "./components/HandleLogin"
 import LeftMenu from "./components/LeftMenu"
 import TopNav from "./components/TopNav"
+import AdminPage from "./pages/AdminPage"
 import ClassManagement from "./pages/AdminPage/ClassManagement"
 import UserManagement from "./pages/AdminPage/UserManagement"
 import ClassroomPage from "./pages/ClassroomPage"
@@ -21,6 +23,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [themeColor, setThemeColor] = useState()
   const [isShowLogin, setIsShowLogin] = useState(false)
+  const [isShowAdminLogin, setIsShowAdminLogin] = useState(false)
 
   const [token] = useState(new Cookies().get('token'))
 
@@ -36,11 +39,19 @@ const App = () => {
   }
 
   useEffect(() => {
-    if (token?.length && token !== 'undefined') {
+    const pathname = location.pathname
+    const isLogin = token?.length && token !== 'undefined'
+    if (isLogin) {
       getClassrooms()
     }
-    else if (location.pathname.includes('/reset-password')) {
+    else if (pathname.includes('/reset-password')) {
       setIsShowLogin(false)
+    }
+    else if (pathname.includes('/admin')) {
+      setIsShowLogin(false)
+      if (!isLogin) {
+        setIsShowAdminLogin(true)
+      }
     }
     else {
       setIsShowLogin(true)
@@ -51,6 +62,7 @@ const App = () => {
     <>
 
       <HandleLogin isShowLogin={isShowLogin} setIsShowLogin={setIsShowLogin} />
+      <HandleAdminLogin show={isShowAdminLogin} onHide={() => setIsShowAdminLogin(false)} />
 
       <TopNav
         showMenu={showMenu}
@@ -84,6 +96,8 @@ const App = () => {
             <Route path="/c/:id/join" element={<PreJoinClassPage />} />
 
             <Route path="/user-info" element={<UserInformationPage />} />
+
+            <Route path="/admin" element={<AdminPage />} />
 
             <Route path="/admin/users-management" element={<UserManagement />} />
 

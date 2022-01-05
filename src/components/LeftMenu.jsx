@@ -37,9 +37,12 @@ const LeftMenu = ({ showMenu, resClassrooms }) => {
   }, [location, location.pathname, resClassrooms])
 
   const menuList = [
-    { id: 0, name: "Trang chính", url: "/", icon: "bi-house-door-fill" },
-    // { id: 1, name: "Sự kiện sắp tới", url: "", icon: "bi-calendar-event" },
-    // { id: 2, name: "Cài đặt", url: "", icon: "bi-gear-fill" },
+    {
+      id: 0,
+      name: "Trang chính",
+      url: isAdmin ? "/admin" : "/",
+      icon: "bi-house-door-fill",
+    },
   ]
 
   const adminMenu = [
