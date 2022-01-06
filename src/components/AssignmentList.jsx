@@ -22,6 +22,7 @@ const AssignmentList = ({
     code: "",
     isEdit: false,
   })
+  const [onFinal, setOnFinal] = useState({ code: "", isSetFinal: false, isFinal: false })
   const [token] = useState(new Cookies().get("token"))
   const [isShowModal, setIsShowModal] = useState(false)
   const [onShowDetail, setOnShowDetail] = useState({
@@ -52,7 +53,7 @@ const AssignmentList = ({
   )
 
   const deleteAssignment = async () => {
-    try {
+    try {      
       const res = await post(
         `/delete-assignment`,
         token,
@@ -61,7 +62,7 @@ const AssignmentList = ({
       )
       setAssignments(res?.params)
       setTotalPoint(res?.total)
-      setSumPoint(res?.sum)
+      setSumPoint(res?.sum)      
       setOnDelete({ code: "", isDelete: false })
     } catch (error) {
       setOnDelete({ code: "", isDelete: false })
@@ -83,16 +84,35 @@ const AssignmentList = ({
     }
   }
 
+  const setAssignmentFinalize = async () => {    
+    try {      
+      const res = await post(
+        `/set-assignment-finalize`,
+        token,
+        {},
+        { classroomId: classroom?._id, assignmentCode: onFinal?.code , isFinal: onFinal?.isFinal}
+      )
+      setAssignments(res?.params)
+      setOnFinal({ code: "", isSetFinal: false, isFinal: onFinal?.isFinal})
+    } catch (error) {
+      setOnFinal({ code: "", isSetFinal: false, isFinal: onFinal?.isFinal })
+      console.log("setAssignmentFinalize - error", error)
+    }
+  }
+
   useEffect(() => {
     if (token) {
       if (onDelete?.isDelete) {
         deleteAssignment()
       }
-      if (onEdit?.isEdit) {
+      if (onEdit?.isEdit) {       
         setIsShowModal(true)
+      }      
+      if (onFinal?.isSetFinal) {        
+        setAssignmentFinalize()
       }
     }
-  }, [token, onDelete, onEdit])
+  }, [token, onDelete, onEdit, onFinal])
 
   const onSubmit = (data) => {
     setIsShowModal(false)
@@ -178,6 +198,8 @@ const AssignmentList = ({
           setOnEdit={setOnEdit}
           setOnShowDetail={setOnShowDetail}
           isTeacher={isTeacher}
+          isFinal={assignment.isFinal}
+          setOnFinal={setOnFinal}
         />
       ))}
       <AssignmentDetail

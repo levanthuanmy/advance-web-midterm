@@ -12,6 +12,8 @@ const AssignmentItem = ({
   setOnEdit,
   setOnShowDetail,
   isTeacher,
+  isFinal,
+  setOnFinal
 }) => {
   console.log('id', id)
   const ref = useRef(null)
@@ -116,7 +118,7 @@ const AssignmentItem = ({
 
       <div className="h3 mb-0 ms-4">{assignment?.name}</div>
       <div className="fs-5 mb-0 ms-auto">{assignment?.point} điểm</div>
-
+      
       <Dropdown>
         <Dropdown.Toggle
           as={CustomToggle}
@@ -137,6 +139,20 @@ const AssignmentItem = ({
           <Dropdown.Divider />
           {isTeacher && (
             <>
+            <Dropdown.Item
+                eventKey="1"
+                className="text-center"
+                onClick={() =>
+                  setOnFinal({
+                    code: id,
+                    isSetFinal: true,
+                    isFinal: !isFinal,
+                  })
+                }
+              >
+                {isFinal ? "Huỷ báo tổng kết" : "Báo tổng kết"}
+              </Dropdown.Item>
+              <Dropdown.Divider />
               <Dropdown.Item
                 eventKey="1"
                 className="text-center"
@@ -164,6 +180,7 @@ const AssignmentItem = ({
               >
                 Xoá
               </Dropdown.Item>
+
             </>
           )}
         </Dropdown.Menu>
