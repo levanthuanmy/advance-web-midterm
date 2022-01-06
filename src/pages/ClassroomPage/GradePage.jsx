@@ -6,12 +6,13 @@ import AssignmentGradeList from "../../components/AssignmentGradeList"
 const GradePage = ({ classroomId }) => {
   const [data, setData] = useState([])
   const [columnsTemplate, setColumnsTemplate] = useState([])
-
+  const [assignmentIds, setAssignmentIds] = useState()
   const cookies = new Cookies()
 
   const getAssignmentsName = async () => {
     try {
       const assignmentNames = []
+      const _assignmentIds = []
       const allAssignmentResult = await get(
         `/assignments/${classroomId}`,
         cookies.get("token"),
@@ -20,8 +21,10 @@ const GradePage = ({ classroomId }) => {
 
       allAssignmentResult?.params?.forEach((assignment) => {
         assignmentNames.push(assignment.name)
+        _assignmentIds.push(assignment._id)
       })
 
+      setAssignmentIds(_assignmentIds)
       return assignmentNames
     } catch (error) {
       console.log("getAssignmentsName - error", error)
@@ -92,7 +95,11 @@ const GradePage = ({ classroomId }) => {
 
   return (
     <div className="py-5">
-      <AssignmentGradeList columns={columnsTemplate} data={data} />
+      <AssignmentGradeList
+        columns={columnsTemplate}
+        data={data}
+        assignmentIds={assignmentIds}
+      />
     </div>
   )
 }

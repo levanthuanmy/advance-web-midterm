@@ -1,9 +1,9 @@
 import React, { useContext } from "react"
-import { Table } from "react-bootstrap"
+import { Button, Table } from "react-bootstrap"
 import { useTable } from "react-table"
 import { ThemeColorContext } from "../pages/ClassroomPage"
 
-const AssignmentGradeList = ({ columns, data }) => {
+const AssignmentGradeList = ({ columns, data, assignmentIds }) => {
   const {
     getTableProps, // table props from react-table
     headerGroups, // headerGroups, if your table has groupings
@@ -13,6 +13,18 @@ const AssignmentGradeList = ({ columns, data }) => {
     columns,
     data,
   })
+
+  const isAssignmentColumn = (accessor) => {
+    return (
+      accessor !== "total" && accessor !== "name" && accessor !== "studentId"
+    )
+  }
+
+  const handleFinalizeAssignment = (assignmentCode) => {
+    // assignmentCode sẽ là cái column.id : assignmentGrade[0] ..., t xử lý để lấy cái id 0 ra 🤡
+    const id = assignmentCode.split(`[`)[1].split(`]`)[0]
+    console.log(assignmentIds[id])
+  }
 
   const themeColor = useContext(ThemeColorContext)
 
@@ -30,6 +42,15 @@ const AssignmentGradeList = ({ columns, data }) => {
                 {...column.getHeaderProps()}
               >
                 {column.render("Header")}
+                {isAssignmentColumn(column.id) && (
+                  <Button
+                    variant="light"
+                    className="ms-2"
+                    onClick={() => handleFinalizeAssignment(column.id)}
+                  >
+                    kkk
+                  </Button>
+                )}
               </td>
             ))}
           </tr>
