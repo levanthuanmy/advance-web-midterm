@@ -54,6 +54,12 @@ const LeftMenu = ({ showMenu, resClassrooms }) => {
     },
     {
       id: 2,
+      name: "Quản lý quản trị viên",
+      url: "/admin/admins-management",
+      icon: "bi-person-badge",
+    },
+    {
+      id: 3,
       name: "Quản lý lớp học",
       url: "/admin/classes-management",
       icon: "bi-person-video3",

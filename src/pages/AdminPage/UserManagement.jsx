@@ -1,17 +1,8 @@
-import React, { useEffect } from "react"
-import { get } from "../../api"
-import {
-  Button,
-  Col,
-  Form,
-  FormControl,
-  InputGroup,
-  Row,
-  Table,
-} from "react-bootstrap"
-import { useState } from "react"
-import Cookies from "universal-cookie/es6"
+import React, { useEffect, useState } from "react"
+import { Button, FormControl, InputGroup, Table } from "react-bootstrap"
 import { useForm } from "react-hook-form"
+import Cookies from "universal-cookie/es6"
+import { get } from "../../api"
 import AdminViewUserDetail from "../../components/AdminViewUserDetail"
 
 const UserManagement = () => {
@@ -22,12 +13,7 @@ const UserManagement = () => {
   const [isShowModal, setIsShowModal] = useState(false)
   const [isReGet, setIsReGet] = useState(true)
   const [currentUserId, setCurrentUserId] = useState()
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm()
+  const { register, handleSubmit } = useForm()
 
   const onHide = () => {
     setIsShowModal(false)
