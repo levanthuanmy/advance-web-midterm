@@ -7,6 +7,15 @@ import { get } from "../api"
 const AdminViewUserDetail = ({ show, onHide, userId }) => {
   const [token] = useState(new Cookies().get("token"))
   const [resUser, setResUser] = useState()
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+  }
 
   const userDetail = async () => {
     try {
@@ -59,11 +68,15 @@ const AdminViewUserDetail = ({ show, onHide, userId }) => {
         </tr>
         <tr>
           <td>Ngày tạo:</td>
-          <td>{resUser?.createdAt}</td>
+          <td>
+            {new Date(resUser?.createdAt).toLocaleDateString("vi-VN", options)}
+          </td>
         </tr>
         <tr>
           <td>Ngày cập nhật gần nhất:</td>
-          <td>{resUser?.updatedAt}</td>
+          <td>
+            {new Date(resUser?.updatedAt).toLocaleDateString("vi-VN", options)}
+          </td>
         </tr>
       </Modal.Body>
       <Modal.Footer>
