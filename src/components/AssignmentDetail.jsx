@@ -84,16 +84,21 @@ const AssignmentDetail = ({
   }
 
   const postGrade = (studentId, newGrade) => {
-    console.log(" set grade ", {
-      classroomId: classroom?._id,
-      assignmentCode: assignment?._id,
-      gradeList: [{ studentId, grade: newGrade }],
-    })
-    postGradeForStudent({
-      classroomId: classroom?._id,
-      assignmentCode: assignment?._id,
-      gradeList: [{ studentId, grade: newGrade }],
-    })
+    if (newGrade) {
+      postGradeForStudent({
+        classroomId: classroom?._id,
+        assignmentCode: assignment?._id,
+        gradeList: [{ studentId, grade: newGrade }],
+      })
+    } else {
+      postGradeForStudent({
+        classroomId: classroom?._id,
+        assignmentCode: assignment?._id,
+        gradeList: [{ studentId, grade: gradeList?.find((item) => item?.studentId === studentId)
+              ?.grade }],
+      })
+    }
+
   }
 
   const handleGrade = (e, studentId) => {

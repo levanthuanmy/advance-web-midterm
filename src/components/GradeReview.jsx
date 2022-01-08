@@ -82,7 +82,9 @@ const GradeReview = ({ gradeList, resReviewId, isTeacher, studentId, postGrade }
             Điểm mong muốn: {resReview?.expectedGrade}
           </div>
         </div>
-
+        {isTeacher && <Button className="" onClick={() => {
+          postGrade(studentId, undefined)
+        }}>Không đồng ý</Button>}
         {isTeacher && <Button className="" onClick={() => {
           postGrade(studentId, resReview?.expectedGrade)
         }}>Đồng ý yêu cầu</Button>}
