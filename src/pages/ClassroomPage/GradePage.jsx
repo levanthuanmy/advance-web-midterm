@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react"
 import Cookies from "universal-cookie"
-import { get } from "../../api"
+import {get, post} from "../../api"
 import AssignmentGradeList from "../../components/AssignmentGradeList"
 
 const GradePage = ({ classroomId }) => {
   const [data, setData] = useState([])
   const [columnsTemplate, setColumnsTemplate] = useState([])
   const [assignmentIds, setAssignmentIds] = useState()
+  const [assignmentIsFinals, setAssignmentIsFinals] = useState()
   const cookies = new Cookies()
 
   const getAssignmentsName = async () => {
     try {
       const assignmentNames = []
       const _assignmentIds = []
+      const _assignmentIsFinals = []
       const allAssignmentResult = await get(
         `/assignments/${classroomId}`,
         cookies.get("token"),
@@ -22,14 +24,26 @@ const GradePage = ({ classroomId }) => {
       allAssignmentResult?.params?.forEach((assignment) => {
         assignmentNames.push(assignment.name)
         _assignmentIds.push(assignment._id)
+        _assignmentIsFinals.push(assignment.isFinal)
       })
 
+      setAssignmentIsFinals(_assignmentIsFinals)
       setAssignmentIds(_assignmentIds)
       return assignmentNames
     } catch (error) {
       console.log("getAssignmentsName - error", error)
       return ""
     }
+  }
+
+  const setFinal = async (assignmentCode, isFinal) => {
+    const res = await post(
+        `/set-assignment-finalize`,
+        cookies.get("token"),
+        {},
+        { classroomId: classroomId, assignmentCode: assignmentCode , isFinal: isFinal}
+    )
+    handleData()
   }
 
   const handleData = async () => {
@@ -99,6 +113,8 @@ const GradePage = ({ classroomId }) => {
         columns={columnsTemplate}
         data={data}
         assignmentIds={assignmentIds}
+        assignmentIsFinals={assignmentIsFinals}
+        setFinal={setFinal}
       />
     </div>
   )

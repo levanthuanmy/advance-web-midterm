@@ -2,8 +2,9 @@ import React, { useContext } from "react"
 import { Button, Table } from "react-bootstrap"
 import { useTable } from "react-table"
 import { ThemeColorContext } from "../pages/ClassroomPage"
+import {post} from "../api";
 
-const AssignmentGradeList = ({ columns, data, assignmentIds }) => {
+const AssignmentGradeList = ({ columns, data, assignmentIds, assignmentIsFinals, setFinal }) => {
   const {
     getTableProps, // table props from react-table
     headerGroups, // headerGroups, if your table has groupings
@@ -20,10 +21,9 @@ const AssignmentGradeList = ({ columns, data, assignmentIds }) => {
     )
   }
 
-  const handleFinalizeAssignment = (assignmentCode) => {
-    // assignmentCode sẽ là cái column.id : assignmentGrade[0] ..., t xử lý để lấy cái id 0 ra 🤡
+  const handleFinalizeAssignment = async (assignmentCode) => {
     const id = assignmentCode.split(`[`)[1].split(`]`)[0]
-    console.log(assignmentIds[id])
+    setFinal(assignmentIds[id], !assignmentIsFinals[id])
   }
 
   const themeColor = useContext(ThemeColorContext)
@@ -48,7 +48,7 @@ const AssignmentGradeList = ({ columns, data, assignmentIds }) => {
                     className="ms-2"
                     onClick={() => handleFinalizeAssignment(column.id)}
                   >
-                    kkk
+                    {!Boolean(assignmentIsFinals[column.id.split(`[`)[1].split(`]`)[0]]) ? "Báo điểm" : "Huỷ báo điểm"}
                   </Button>
                 )}
               </td>

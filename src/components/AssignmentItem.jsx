@@ -150,7 +150,7 @@ const AssignmentItem = ({
                   })
                 }
               >
-                {isFinal ? "Huỷ báo tổng kết" : "Báo tổng kết"}
+                {isFinal ? "Huỷ báo điểm" : "Báo điểm"}
               </Dropdown.Item>
               <Dropdown.Divider />
               <Dropdown.Item
