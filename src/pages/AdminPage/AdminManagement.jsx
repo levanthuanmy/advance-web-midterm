@@ -3,26 +3,38 @@ import { Button, FormControl, InputGroup, Table } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 import Cookies from "universal-cookie/es6"
 import { get } from "../../api"
-import AdminViewClassDetail from "../../components/AdminViewClassDetail"
+import AdminViewAdminDetail from "../../components/AdminViewAdminDetail"
 import CustomSpinner from "../../components/CustomSpinner"
 
-const ClassManagement = () => {
-  const { register, handleSubmit } = useForm()
+const AdminManagement = () => {
   const [token] = useState(new Cookies().get("token"))
-  const [resClassList, setResClassList] = useState()
+  const [resUserList, setResUserList] = useState()
   const [isLoading, setIsLoading] = useState(true)
   const [sort, setSort] = useState("asc")
   const [isShowModal, setIsShowModal] = useState(false)
   const [isReGet, setIsReGet] = useState(true)
-  const [currentClass, setCurrentClass] = useState()
+  const [currentUserId, setCurrentUserId] = useState()
+  const { register, handleSubmit } = useForm()
 
-  const getListClass = async () => {
+  const onHide = () => {
+    setIsShowModal(false)
+    setCurrentUserId(null)
+  }
+
+  const handleViewUserDetail = (id) => {
+    setCurrentUserId(id)
+    setIsShowModal(true)
+  }
+
+  const getUserList = async () => {
     try {
       setIsLoading(true)
-      const res = await get(`/admin/class-list?sort=${sort}`, token)
-      setResClassList(res)
+
+      const res = await get(`/admins?sort=${sort}`, token)
+
+      setResUserList(res)
     } catch (error) {
-      console.log("getListClass - error", error)
+      console.log("getUserList - error", error)
     } finally {
       setIsLoading(false)
     }
@@ -32,9 +44,9 @@ const ClassManagement = () => {
     try {
       setIsLoading(true)
 
-      const res = await get(`/admins/class/search`, token, data)
+      const res = await get(`/admins/search`, token, data)
       console.log("onSubmit - res", res)
-      setResClassList(res)
+      setResUserList(res)
     } catch (error) {
       console.log("onSubmit - error", error)
     } finally {
@@ -42,37 +54,28 @@ const ClassManagement = () => {
     }
   }
 
-  const onShowDetailClass = (classroom) => {
-    setCurrentClass(classroom)
-    setIsShowModal(true)
-  }
-
-  const onHide = () => {
-    setCurrentClass(null)
-    setIsShowModal(false)
-  }
-
   useEffect(() => {
-    if (token) {
-      getListClass()
+    if (token && isReGet) {
+      getUserList()
+      setIsReGet(false)
     }
-  }, [token, sort])
+  }, [token, sort, isReGet])
 
   return (
     <>
-      <AdminViewClassDetail
+      <AdminViewAdminDetail
         show={isShowModal}
         onHide={onHide}
-        classroom={currentClass}
+        userId={currentUserId}
       />
 
       <div className="mx-5">
-        <div className="fs-2 mb-5">Quản lý lớp học</div>
+        <div className="fs-2 mb-5">Quản lý quản trị viên</div>
 
         <InputGroup className="mb-3 cus-rounded-dot75rem" size="lg">
           <FormControl
             type="text"
-            placeholder="Tìm lớp học theo tên"
+            placeholder="Tìm quản trị viên theo tên"
             {...register("searchText")}
           />
           <Button
@@ -102,27 +105,18 @@ const ClassManagement = () => {
           <Table borderless hover className="shadow-sm">
             <tbody className="rounded-3">
               <tr className="bg-light fs-5 fw-bold">
-                <td className="px-3">Tên lớp</td>
-                <td className="px-3">Số giảng viên</td>
-                <td className="px-3">Số học viên</td>
+                <td className="px-3">Tên đầy đủ</td>
                 <td className="px-3">Hành động</td>
               </tr>
-              {resClassList?.map((classroom, id) => {
+              {resUserList?.map((user, id) => {
                 return (
                   <tr key={id}>
-                    <td className="px-3 text-truncate">{classroom?.name}</td>
-                    <td className="px-3 text-truncate">
-                      {classroom?.teachers?.length}
-                    </td>
-                    <td className="px-3 text-truncate">
-                      {Number(classroom?.students?.length) +
-                        Number(classroom?.unmappedStudents?.length)}
-                    </td>
+                    <td className="px-3 text-truncate">{user?.name}</td>
 
                     <td className="px-3">
                       <i
                         className="bi bi-eye-fill fs-3 text-primary cursor-pointer me-3"
-                        onClick={() => onShowDetailClass(classroom)}
+                        onClick={() => handleViewUserDetail(user?._id)}
                       />
                     </td>
                   </tr>
@@ -136,4 +130,4 @@ const ClassManagement = () => {
   )
 }
 
-export default ClassManagement
+export default AdminManagement

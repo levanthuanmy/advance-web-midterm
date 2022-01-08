@@ -7,6 +7,7 @@ import HandleLogin from "./components/HandleLogin"
 import LeftMenu from "./components/LeftMenu"
 import TopNav from "./components/TopNav"
 import AdminPage from "./pages/AdminPage"
+import AdminManagement from "./pages/AdminPage/AdminManagement"
 import ClassManagement from "./pages/AdminPage/ClassManagement"
 import UserManagement from "./pages/AdminPage/UserManagement"
 import ClassroomPage from "./pages/ClassroomPage"
@@ -100,6 +101,8 @@ const App = () => {
             <Route path="/admin" element={<AdminPage />} />
 
             <Route path="/admin/users-management" element={<UserManagement />} />
+
+            <Route path="/admin/admins-management" element={<AdminManagement />} />
 
             <Route path="/admin/classes-management" element={<ClassManagement />} />
 
