@@ -105,7 +105,11 @@ const ClassroomPage = ({ getThemeColor, currentTab }) => {
           isTeacher={isTeacher}
         />
       )
-    if (currentTab === 3) return <GradePage classroomId={id} />
+    if (currentTab === 3)
+      return <GradePage
+          classroomId={id}
+          isTeacher={isTeacher}
+      />
     return <></>
   }
 

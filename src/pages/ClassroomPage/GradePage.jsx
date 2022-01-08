@@ -3,7 +3,7 @@ import Cookies from "universal-cookie"
 import {get, post} from "../../api"
 import AssignmentGradeList from "../../components/AssignmentGradeList"
 
-const GradePage = ({ classroomId }) => {
+const GradePage = ({ classroomId, isTeacher }) => {
   const [data, setData] = useState([])
   const [columnsTemplate, setColumnsTemplate] = useState([])
   const [assignmentIds, setAssignmentIds] = useState()
@@ -112,6 +112,7 @@ const GradePage = ({ classroomId }) => {
       <AssignmentGradeList
         columns={columnsTemplate}
         data={data}
+        isTeacher={isTeacher}
         assignmentIds={assignmentIds}
         assignmentIsFinals={assignmentIsFinals}
         setFinal={setFinal}

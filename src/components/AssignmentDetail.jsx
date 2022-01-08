@@ -287,12 +287,14 @@ const AssignmentDetail = ({
           <Col xs="12" lg="6" className="p-5 ps-0">
             {!Boolean(isTeacher) && (
               <>
-                <Button
-                  className="cus-rounded-dot75rem"
-                  onClick={() => setIsShow(true)}
-                >
-                  Tạo yêu cầu phúc khảo
-                </Button>
+              {Boolean(assignment?.isFinal) && (
+                  <Button
+                      className="cus-rounded-dot75rem"
+                      onClick={() => setIsShow(true)}
+                  >
+                    Tạo yêu cầu phúc khảo
+                  </Button>
+              )}
                 <GradeReview
                   isTeacher={Boolean(isTeacher)}
                   gradeList={gradeList}
