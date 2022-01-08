@@ -83,6 +83,19 @@ const AssignmentDetail = ({
     }
   }
 
+  const postGrade = (studentId, newGrade) => {
+    console.log(" set grade ", {
+      classroomId: classroom?._id,
+      assignmentCode: assignment?._id,
+      gradeList: [{ studentId, grade: newGrade }],
+    })
+    postGradeForStudent({
+      classroomId: classroom?._id,
+      assignmentCode: assignment?._id,
+      gradeList: [{ studentId, grade: newGrade }],
+    })
+  }
+
   const handleGrade = (e, studentId) => {
     if (isError) {
       e.target.value = e.target.defaultValue
@@ -294,6 +307,8 @@ const AssignmentDetail = ({
                     key={id}
                     isTeacher={Boolean(isTeacher)}
                     resReviewId={item.reviewId}
+                    studentId={item.studentId}
+                    postGrade={postGrade}
                   />
                 ) : (
                   <></>

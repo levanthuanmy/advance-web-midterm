@@ -4,13 +4,12 @@ import { useForm } from "react-hook-form"
 import Cookies from "universal-cookie"
 import { get, post } from "../api"
 
-const GradeReview = ({ gradeList, resReviewId, isTeacher }) => {
+const GradeReview = ({ gradeList, resReviewId, isTeacher, studentId, postGrade }) => {
   const [token] = useState(new Cookies().get("token"))
   const [reviewId, setReviewId] = useState(null)
   const [resReview, setResReview] = useState()
   const [isLoading, setIsLoading] = useState(false)
   const { register, reset, handleSubmit } = useForm()
-
   const getReviewById = async (rvId) => {
     try {
       setIsLoading(true)
@@ -84,7 +83,9 @@ const GradeReview = ({ gradeList, resReviewId, isTeacher }) => {
           </div>
         </div>
 
-        {isTeacher && <Button className="">Đồng ý yêu cầu</Button>}
+        {isTeacher && <Button className="" onClick={() => {
+          postGrade(studentId, resReview?.expectedGrade)
+        }}>Đồng ý yêu cầu</Button>}
       </div>
 
       <div className="p-2 px-3">
