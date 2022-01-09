@@ -5,6 +5,7 @@ import Cookies from "universal-cookie/es6"
 import { get } from "../../api"
 import AdminViewAdminDetail from "../../components/AdminViewAdminDetail"
 import CustomSpinner from "../../components/CustomSpinner"
+import ModalCreateAdmin from "../../components/ModalCreateAdmin"
 
 const AdminManagement = () => {
   const [token] = useState(new Cookies().get("token"))
@@ -12,6 +13,7 @@ const AdminManagement = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [sort, setSort] = useState("asc")
   const [isShowModal, setIsShowModal] = useState(false)
+  const [isShowCreateModal, setIsShowCreateModal] = useState(false)
   const [isReGet, setIsReGet] = useState(true)
   const [currentUserId, setCurrentUserId] = useState()
   const { register, handleSubmit } = useForm()
@@ -69,6 +71,12 @@ const AdminManagement = () => {
         userId={currentUserId}
       />
 
+      <ModalCreateAdmin
+        show={isShowCreateModal}
+        onHide={() => setIsShowCreateModal(false)}
+        setIsReGet={setIsReGet}
+      />
+
       <div className="mx-5">
         <div className="fs-2 mb-5">Quản lý quản trị viên</div>
 
@@ -96,6 +104,15 @@ const AdminManagement = () => {
         className="cus-rounded-dot75rem mt-3 ms-5"
       >
         Sắp xếp theo thời gian: {sort === "asc" ? "tăng dần" : "giảm dần"}
+      </Button>
+
+      <Button
+        onClick={() => {
+          setIsShowCreateModal(true)
+        }}
+        className="cus-rounded-dot75rem mt-3 ms-5"
+      >
+        Tạo mới quản trị viên
       </Button>
 
       {isLoading ? (

@@ -8,6 +8,8 @@ export const MAIL_SERVICE_ID = process.env.REACT_APP_MAIL_SERVICE_ID
 export const MAIL_TEMPLATE_ID = process.env.REACT_APP_MAIL_TEMPLATE_ID
 export const MAIL_API_KEY = process.env.REACT_APP_MAIL_API_KEY
 
+export const ADMIN_SECRET_CODE = process.env.REACT_APP_ADMIN_SECRET_CODE
+
 export const emailPattern = {
   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
   message: "Email sai định dạng",

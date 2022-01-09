@@ -285,6 +285,16 @@ const HandleLogin = ({ isShowLogin, setIsShowLogin }) => {
             Quên mật khẩu
           </div>
 
+          <div
+            className="text-center pt-4 text-secondary cursor-pointer"
+            onClick={() => {
+              setIsShowLogin(false)
+              navigate("/admin")
+            }}
+          >
+            Đến trang dành cho người quản trị
+          </div>
+
           <div className="d-flex justify-content-between">
             <Button
               disabled={isLoading}
