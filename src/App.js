@@ -11,6 +11,7 @@ import AdminManagement from "./pages/AdminPage/AdminManagement"
 import ClassManagement from "./pages/AdminPage/ClassManagement"
 import UserManagement from "./pages/AdminPage/UserManagement"
 import ClassroomPage from "./pages/ClassroomPage"
+import ErrorPage from "./pages/ErrorPage"
 import HomePage from "./pages/HomePage"
 import PreJoinClassPage from "./pages/PreJoinClassPage"
 import ResetPasswordPage from "./pages/ResetPasswordPage"
@@ -53,6 +54,9 @@ const App = () => {
       if (!isLogin) {
         setIsShowAdminLogin(true)
       }
+    }
+    else if (pathname.includes('/error')) {
+      setIsShowLogin(false)
     }
     else {
       setIsShowLogin(true)
@@ -111,6 +115,10 @@ const App = () => {
         </div>
 
       </div>
+
+      <Routes>
+        <Route path="/error" element={<ErrorPage />} />
+      </Routes>
     </>
   )
 }

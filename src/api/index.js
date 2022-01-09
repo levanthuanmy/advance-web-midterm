@@ -23,6 +23,7 @@ export const get = async (path, token = '', params, headers, responseType = 'jso
       console.log(error.response.data)
       console.log(error.response.status)
       console.log(error.response.headers)
+      // if (typeof window != 'undefined' && error.response.status == 403) window.location.href = '/error'
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
@@ -33,7 +34,6 @@ export const get = async (path, token = '', params, headers, responseType = 'jso
       console.log('Error', error.message)
     }
     console.log(error.config)
-
     throw error
   }
 }

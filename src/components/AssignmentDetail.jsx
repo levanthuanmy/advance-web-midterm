@@ -30,7 +30,6 @@ const AssignmentDetail = ({
   const themeColor = useContext(ThemeColorContext)
   const [token] = useState(new Cookies().get("token"))
   const [gradeList, setGradeList] = useState()
-  console.log("gradeList", gradeList)
   const [allStudents, setAllStudents] = useState()
   const [currentGrade, setCurrentGrade] = useState(-1)
   const [isError, setIsError] = useState(false)
@@ -56,7 +55,15 @@ const AssignmentDetail = ({
   }
 
   const mergeArray = () => {
-    setAllStudents([...students, ...classroom?.unmappedStudents])
+    if (isTeacher) {
+      setAllStudents([...students, ...classroom?.unmappedStudents])
+    } else {
+      setAllStudents([
+        students?.find(
+          (student) => student?.studentId === gradeList[0].studentId
+        ),
+      ])
+    }
   }
 
   const getGradeOfStudent = (student) => {
@@ -94,11 +101,15 @@ const AssignmentDetail = ({
       postGradeForStudent({
         classroomId: classroom?._id,
         assignmentCode: assignment?._id,
-        gradeList: [{ studentId, grade: gradeList?.find((item) => item?.studentId === studentId)
-              ?.grade }],
+        gradeList: [
+          {
+            studentId,
+            grade: gradeList?.find((item) => item?.studentId === studentId)
+              ?.grade,
+          },
+        ],
       })
     }
-
   }
 
   const handleGrade = (e, studentId) => {
@@ -194,9 +205,7 @@ const AssignmentDetail = ({
       students && mergeArray()
     }
     return () => setGradeList(null)
-  }, [assignment, classroom, students])
-
-  console.log("object", isTeacher)
+  }, [assignment, classroom, students, isTeacher])
 
   return (
     <Modal
@@ -292,14 +301,14 @@ const AssignmentDetail = ({
           <Col xs="12" lg="6" className="p-5 ps-0">
             {!Boolean(isTeacher) && (
               <>
-              {Boolean(assignment?.isFinal) && (
+                {Boolean(assignment?.isFinal) && (
                   <Button
-                      className="cus-rounded-dot75rem"
-                      onClick={() => setIsShow(true)}
+                    className="cus-rounded-dot75rem"
+                    onClick={() => setIsShow(true)}
                   >
                     Tạo yêu cầu phúc khảo
                   </Button>
-              )}
+                )}
                 <GradeReview
                   isTeacher={Boolean(isTeacher)}
                   gradeList={gradeList}
