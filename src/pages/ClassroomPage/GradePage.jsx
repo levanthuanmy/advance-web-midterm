@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import Cookies from "universal-cookie"
-import {get, post} from "../../api"
+import { get, post } from "../../api"
 import AssignmentGradeList from "../../components/AssignmentGradeList"
 
 const GradePage = ({ classroomId, isTeacher }) => {
@@ -38,10 +38,14 @@ const GradePage = ({ classroomId, isTeacher }) => {
 
   const setFinal = async (assignmentCode, isFinal) => {
     const res = await post(
-        `/set-assignment-finalize`,
-        cookies.get("token"),
-        {},
-        { classroomId: classroomId, assignmentCode: assignmentCode , isFinal: isFinal}
+      `/set-assignment-finalize`,
+      cookies.get("token"),
+      {},
+      {
+        classroomId: classroomId,
+        assignmentCode: assignmentCode,
+        isFinal: isFinal,
+      }
     )
     handleData()
   }
