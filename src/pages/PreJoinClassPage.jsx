@@ -7,7 +7,7 @@ import CustomSpinner from "../components/CustomSpinner"
 import { simpleDecode } from "../config/helper"
 import useQuery from "../hooks/useQuery"
 
-const PreJoinClassPage = () => {
+const PreJoinClassPage = ({ joinByCode = false }) => {
   const { id } = useParams()
   const navigate = useNavigate()
   const query = useQuery()
@@ -31,7 +31,7 @@ const PreJoinClassPage = () => {
       }
 
       setIsShow(false)
-      navigate(`/c/${id}`)
+      joinByCode ? navigate("/") : navigate(`/c/${id}`)
     } catch (error) {
       console.log("joinClassroom - error", error)
 

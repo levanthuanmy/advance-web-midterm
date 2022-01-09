@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { Button, Form, Modal } from "react-bootstrap"
 import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router-dom"
 import Cookies from "universal-cookie"
 import { post } from "../api"
 import ClassroomList from "../components/ClassroomList"
@@ -12,10 +13,13 @@ const HomePage = ({
   setIsLoading,
 }) => {
   const [isShowModal, setIsShowModal] = useState(false)
+  const [isShowModalCode, setIsShowModalCode] = useState(false)
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors },
   } = useForm()
 
@@ -125,8 +129,50 @@ const HomePage = ({
     </Modal>
   )
 
+  const renderInputCode = () => (
+    <Modal
+      show={isShowModalCode}
+      onHide={() => setIsShowModalCode(false)}
+      size=""
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Gửi lời mời đến email
+        </Modal.Title>
+      </Modal.Header>
+
+      <Form>
+        <Form.Group className="p-4">
+          <Form.Control
+            className="cus-rounded-dot75rem py-2 px-3"
+            type="text"
+            placeholder="Nhập code của lớp học"
+            {...register("code", {
+              required: "Bạn cần nhập code",
+            })}
+          />
+          {errors.code && (
+            <small className="text-danger">{errors.toEmail?.message}</small>
+          )}
+        </Form.Group>
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            type="submit"
+            onClick={() => navigate(`/join?code=${getValues("code")}`)}
+          >
+            Tham gia
+          </Button>
+        </Modal.Footer>
+      </Form>
+    </Modal>
+  )
+
   return (
     <>
+      {renderInputCode()}
       <div className="ps-4 d-flex align-items-center">
         <div className="h3 text-secondary">Lớp học của bạn</div>
 
@@ -136,6 +182,14 @@ const HomePage = ({
         >
           <div className="h1 user-select-none">+</div>
         </div>
+
+        <Button
+          variant="secondary"
+          className="cus-rounded-dot75rem ms-3 py-2"
+          onClick={() => setIsShowModalCode(true)}
+        >
+          Tham gia một lớp học
+        </Button>
       </div>
 
       <ClassroomList isLoading={isLoading} resClassrooms={resClassrooms} />

@@ -100,6 +100,8 @@ const App = () => {
 
             <Route path="/c/:id/join" element={<PreJoinClassPage />} />
 
+            <Route path="/join" element={<PreJoinClassPage joinByCode={true} />} />
+
             <Route path="/user-info" element={<UserInformationPage />} />
 
             <Route path="/admin" element={<AdminPage />} />

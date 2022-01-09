@@ -37,6 +37,13 @@ const Main = ({ resClassroom, isHost }) => {
     setIsToast(true)
   }
 
+  const handleCopyCode = () => {
+    navigator.clipboard.writeText(resClassroom?.code)
+
+    setToastMsg("Đã lưu code của lớp học vào bộ nhớ đệm. Ctrl + C để dán.")
+    setIsToast(true)
+  }
+
   const patchClassroom = async (body) => {
     try {
       setIsSending(true)
@@ -124,23 +131,6 @@ const Main = ({ resClassroom, isHost }) => {
     )
   }
 
-  const renderIncomingEvent = () => {
-    return (
-      <div className="cus-short-event-info border p-3">
-        <div className="">Sắp đến hạn</div>
-        <div className="fw-normal pt-3 text-muted">
-          Tuyệt vời, không có bài tập nào sắp đến hạn!
-        </div>
-        <div
-          className="pt-3 text-end cursor-pointer"
-          style={{ color: resClassroom?.themeColor }}
-        >
-          Xem tất cả
-        </div>
-      </div>
-    )
-  }
-
   const renderClassroomCode = () => {
     return (
       <div className="cus-short-event-info border p-3 mb-3">
@@ -151,14 +141,24 @@ const Main = ({ resClassroom, isHost }) => {
           </div>
         </div>
         <div
-          className="pt-3 fs-3 w-100 d-flex align-items-center"
+          className="pt-3 fs-3 w-100"
           style={{ color: resClassroom?.themeColor }}
         >
           <div className="w-100 text-truncate">{resClassroom?.code}</div>
           <i
             className="bi bi-clipboard cursor-pointer"
-            onClick={() => handleGenInviteLink()}
-          />
+            onClick={handleCopyCode}
+          >
+            <span className="fs-6 ms-1 fw-normal">Sao chép mã lớp</span>
+          </i>
+          <i
+            className="bi bi-link-45deg cursor-pointer"
+            onClick={handleGenInviteLink}
+          >
+            <span className="fs-6 ms-1 fw-normal">
+              Sao chép đường dẫn tham gia lớp
+            </span>
+          </i>
         </div>
         <div
           className="text-end pt-3 cursor-pointer"
@@ -316,8 +316,6 @@ const Main = ({ resClassroom, isHost }) => {
         <Row className="m-0">
           <Col sm="12" md="auto" className="p-0 me-3 mb-3">
             {isHost && renderClassroomCode()}
-
-            {renderIncomingEvent()}
           </Col>
 
           <Col className="p-0">
