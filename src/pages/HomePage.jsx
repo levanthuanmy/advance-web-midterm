@@ -120,11 +120,9 @@ const HomePage = ({
           </Form.Group>
         </Modal.Body>
 
-        <Modal.Footer>
-          <Button variant="primary" type="submit">
-            Tạo
-          </Button>
-        </Modal.Footer>
+        <Button variant="primary" type="submit" className="m-3 float-end">
+          Tạo
+        </Button>
       </Form>
     </Modal>
   )
@@ -160,7 +158,6 @@ const HomePage = ({
         <Modal.Footer>
           <Button
             variant="primary"
-            type="submit"
             onClick={() => navigate(`/join?code=${getValues("code")}`)}
           >
             Tham gia
@@ -172,7 +169,6 @@ const HomePage = ({
 
   return (
     <>
-      {renderInputCode()}
       <div className="ps-4 d-flex align-items-center">
         <div className="h3 text-secondary">Lớp học của bạn</div>
 
@@ -195,6 +191,7 @@ const HomePage = ({
       <ClassroomList isLoading={isLoading} resClassrooms={resClassrooms} />
 
       {renderModal()}
+      {renderInputCode()}
     </>
   )
 }
