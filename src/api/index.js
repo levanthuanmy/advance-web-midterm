@@ -23,7 +23,9 @@ export const get = async (path, token = '', params, headers, responseType = 'jso
       console.log(error.response.data)
       console.log(error.response.status)
       console.log(error.response.headers)
-      // if (typeof window != 'undefined' && error.response.status == 403) window.location.href = '/error'
+      if (typeof window != 'undefined' && error.response.status === 403 && !window.location.href.includes('/error')) {
+        window.location.href = '/error'
+      }
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
@@ -53,8 +55,10 @@ export const post = async (path, token = '', params, data, headers) => {
       // that falls out of the range of 2xx
       console.log(error.response.data)
       console.log(error.response.status)
-      console.log(error.response.headers)
-    } else if (error.request) {
+      console.log(error.response.headers) 
+      if (typeof window != 'undefined' && error.response.status === 403 && !window.location.href.includes('/error')) window.location.href = '/error'
+
+    } else if (error.request) { 
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
       // http.ClientRequest in node.js
@@ -83,6 +87,7 @@ export const patch = async (path, token = '', params, data, headers) => {
       console.log(error.response.data)
       console.log(error.response.status)
       console.log(error.response.headers)
+      if (typeof window != 'undefined' && error.response.status === 403 && !window.location.href.includes('/error')) window.location.href = '/error'
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of

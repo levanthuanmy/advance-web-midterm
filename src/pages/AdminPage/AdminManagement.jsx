@@ -37,6 +37,7 @@ const AdminManagement = () => {
       setResUserList(res)
     } catch (error) {
       console.log("getUserList - error", error)
+      alert(error?.response?.data)
     } finally {
       setIsLoading(false)
     }
@@ -51,6 +52,7 @@ const AdminManagement = () => {
       setResUserList(res)
     } catch (error) {
       console.log("onSubmit - error", error)
+      alert(error?.response?.data)
     } finally {
       setIsLoading(false)
     }

@@ -35,6 +35,7 @@ const UserManagement = () => {
       setResUserList(res)
     } catch (error) {
       console.log("getUserList - error", error)
+      alert(error?.response?.data)
     } finally {
       setIsLoading(false)
     }
@@ -48,6 +49,7 @@ const UserManagement = () => {
       console.log("banAccount - res", res)
     } catch (error) {
       console.log("banAccount - error", error)
+      alert(error?.response?.data)
     } finally {
       setIsReGet(true)
       setIsLoading(false)
@@ -62,6 +64,7 @@ const UserManagement = () => {
       console.log("lockAccount - res", res)
     } catch (error) {
       console.log("lockAccount - error", error)
+      alert(error?.response?.data)
     } finally {
       setIsReGet(true)
       setIsLoading(false)
@@ -72,9 +75,10 @@ const UserManagement = () => {
     try {
       setIsLoading(true)
 
-      const res = await get(`/admin/user/unlock-account?id=${userId}`, token)
+      await get(`/admin/user/unlock-account?id=${userId}`, token)
     } catch (error) {
       console.log("unlockAccount - error", error)
+      alert(error?.response?.data)
     } finally {
       setIsReGet(true)
       setIsLoading(false)
@@ -89,6 +93,7 @@ const UserManagement = () => {
       console.log("onSubmit - res", res)
       setResUserList(res)
     } catch (error) {
+      alert(error?.response?.data)
       console.log("onSubmit - error", error)
     } finally {
       setIsLoading(false)

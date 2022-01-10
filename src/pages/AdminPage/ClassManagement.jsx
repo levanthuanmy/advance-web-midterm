@@ -23,6 +23,7 @@ const ClassManagement = () => {
       setResClassList(res)
     } catch (error) {
       console.log("getListClass - error", error)
+      alert(error?.response?.data)
     } finally {
       setIsLoading(false)
     }
@@ -37,6 +38,7 @@ const ClassManagement = () => {
       setResClassList(res)
     } catch (error) {
       console.log("onSubmit - error", error)
+      alert(error?.response?.data)
     } finally {
       setIsLoading(false)
     }
