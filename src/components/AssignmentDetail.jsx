@@ -58,11 +58,12 @@ const AssignmentDetail = ({
     if (isTeacher) {
       setAllStudents([...students, ...classroom?.unmappedStudents])
     } else {
-      setAllStudents([
-        students?.find(
-          (student) => student?.studentId === gradeList[0].studentId
-        ),
-      ])
+      if (gradeList && gradeList[0])
+        setAllStudents([
+          students?.find(
+            (student) => student?.studentId === gradeList[0].studentId
+          ),
+        ])
     }
   }
 
@@ -202,10 +203,13 @@ const AssignmentDetail = ({
   useEffect(() => {
     if (classroom && assignment) {
       getGradeList()
-      students && mergeArray()
     }
     return () => setGradeList(null)
   }, [assignment, classroom, students, isTeacher])
+
+  useEffect(() => {
+    students && gradeList && mergeArray()
+  }, [students, gradeList])
 
   return (
     <Modal
