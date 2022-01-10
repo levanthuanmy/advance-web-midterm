@@ -45,7 +45,14 @@ const HomePage = ({
     }
   }
 
-  const onSubmit = (data) => {
+  const onSubmit = () => {
+    const data = {
+      name: getValues("name"),
+      subject: getValues("subject"),
+      description: getValues("description"),
+      banner: getValues("banner"),
+      room: getValues("room"),
+    }
     createClassroom(data)
     onHideModal()
   }
@@ -120,7 +127,7 @@ const HomePage = ({
           </Form.Group>
         </Modal.Body>
 
-        <Button variant="primary" type="submit" className="m-3 float-end">
+        <Button variant="primary" className="m-3 float-end" onClick={onSubmit}>
           Tạo
         </Button>
       </Form>
